@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+@theme {
+  --color-gold: #A67C00;
+  --color-ivory: #F5F0E8;
+  --color-charcoal: #000000;
+  
+  --font-serif: "Cormorant Garamond", serif;
+  --font-display: "Playfair Display", serif;
+  --font-sans: "Montserrat", sans-serif;
+  --font-script: "Pinyon Script", cursive;
+
+  --animate-fade-in: fadeIn 1.2s ease-out forwards;
+  --animate-slide-up: slideUp 0.8s ease-out forwards;
+  --animate-marquee: marquee 30s linear infinite;
+
+  @keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @keyframes slideUp {
+    0% { transform: translateY(30px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-ivory text-charcoal font-serif antialiased;
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  /* Luxury Sliding Underline Animation */
+  .boutique-link {
+    @apply relative overflow-hidden;
+  }
+  .boutique-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-[1px] bg-gold transition-all duration-300 ease-out;
+  }
+  .boutique-link:hover::after {
+    @apply w-full;
+  }
+  .boutique-link-active::after {
+    @apply w-full;
+  }
+
+  /* Glassmorphism for Overlay Header */
+  .glass-header {
+    @apply bg-black/10 backdrop-blur-md border-b border-white/10;
+  }
+  
+  .dark-luxury-gradient {
+    background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
+  }
+}

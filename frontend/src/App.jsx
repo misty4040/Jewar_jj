@@ -16,11 +16,11 @@ const App = () => {
     useEffect(() => {
         fetchProducts();
     }, [category]);
-
     const fetchProducts = async () => {
         setLoading(true);
+        const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
         try {
-            const response = await axios.get(`http://localhost:5001/api/products?category=${category}`);
+            const response = await axios.get(`${apiBase}/api/products?category=${category}`);
             setProducts(response.data.length ? response.data : [
                 { name: "Clash de Jewar Ring", material: "Rose gold, agate", image: "https://picsum.photos/seed/jewar1/800/1000" },
                 { name: "Clash de Jewar Pendant", material: "Rose gold, diamonds", image: "https://picsum.photos/seed/jewar2/800/1000" },

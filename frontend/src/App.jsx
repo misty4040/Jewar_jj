@@ -18,7 +18,7 @@ const App = () => {
     }, [category]);
     const fetchProducts = async () => {
         setLoading(true);
-        const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5001';
+        const apiBase = window.location.hostname === 'localhost' ? 'http://localhost:5001' : '';
         try {
             const response = await axios.get(`${apiBase}/api/products?category=${category}`);
             setProducts(response.data.length ? response.data : [

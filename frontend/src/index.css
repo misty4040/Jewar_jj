@@ -66,4 +66,12 @@
   .dark-luxury-gradient {
     background: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
   }
+
+  /* Reveal Animations */
+  .reveal {
+    @apply opacity-0 translate-y-8 transition-all duration-1000 ease-out;
+  }
+  .reveal.active {
+    @apply opacity-100 translate-y-0;
+  }
 }

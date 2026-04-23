@@ -51,18 +51,18 @@ const App = () => {
             <Navbar activeCategory={category} onCategoryChange={setCategory} />
 
             {/* Full-Page Cinematic Hero */}
-            <section id="home" className="relative h-screen flex items-center overflow-hidden">
+            <section id="home" className="relative h-[70vh] md:h-screen flex items-center overflow-hidden">
                 <div className="absolute inset-0 z-0 scale-105 transition-transform duration-[20s] hover:scale-100">
-                    <img src="/assets/hero-jewar.jpg" alt="Jewar Luxury Campaign" className="w-full h-full object-cover" />
+                    <img src="/assets/hero-jewar.jpg" alt="Jewar Luxury Campaign" className="w-full h-full object-cover object-[70%_center] md:object-center" />
                     <div className="absolute inset-0 bg-black/40"></div>
                     <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent"></div>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/0 to-black/30"></div>
                 </div>
 
-                <div className="relative z-10 w-full max-w-[1800px] mx-auto px-10 flex flex-col items-start">
+                <div className="relative z-10 w-full max-w-[1800px] mx-auto px-6 md:px-10 flex flex-col items-start">
                     <div className="max-w-4xl animate-slide-up">
                         <span className="block uppercase tracking-[0.6em] text-[13px] mb-8 text-gold/80 font-bold">Flagship Store Exclusive</span>
-                        <h1 className="text-7xl md:text-[130px] font-display font-medium mb-12 leading-[0.85] tracking-tight">
+                        <h1 className="text-4xl md:text-[80px] lg:text-[130px] font-display font-medium mb-12 leading-[0.85] tracking-tight">
                             Crafted in Gold, <br />Designed for <br /><span className="italic font-display">Generations</span>
                         </h1>
                         <div className="flex gap-8 group">
@@ -92,19 +92,19 @@ const App = () => {
             {/* Main Content Sections */}
             <div className="bg-white text-black">
                 {/* Catalogue Section Redesigned for Cartier Style */}
-                <section id="catalogue" className="py-40 bg-white">
-                    <div className="max-w-[1800px] mx-auto px-8 lg:px-14">
-                        <div className="flex flex-col md:flex-row justify-between items-end mb-32 border-b border-black/5 pb-12">
+                <section id="catalogue" className="pt-8 pb-20 md:pb-32 bg-white">
+                    <div className="max-w-[1800px] mx-auto px-4 md:px-8 lg:px-14">
+                        <div className="flex flex-col md:flex-row justify-between items-end mb-20 border-b border-black/5 pb-12">
                             <div className="max-w-2xl">
-                                <span className="text-[12px] tracking-[0.6em] text-gold uppercase block mb-8 font-extrabold">The Jewar Selection</span>
-                                <h2 className="text-6xl md:text-[90px] font-display leading-[0.95] font-medium tracking-tighter">Boutique <br /> Highlights</h2>
+                                <span className="text-[12px] tracking-[0.6em] text-gold uppercase block mb-4 font-extrabold">The Jewar Selection</span>
+                                <h2 className="text-4xl md:text-6xl lg:text-[90px] font-display leading-[0.95] font-medium tracking-tighter">Boutique <br /> Highlights</h2>
                             </div>
                             <div className="hidden md:block">
                                 <a href="#all" className="text-[11px] tracking-[0.4em] font-bold uppercase border-b-2 border-black/20 pb-2 hover:border-gold transition-all duration-500">View All Pieces</a>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-32 gap-x-16">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-20 md:gap-y-32 gap-x-8 md:gap-x-16">
                             {(products.length ? products.slice(0, 4) : [
                                 { 
                                     name: "Clash de Jewar Ring", 
@@ -148,16 +148,16 @@ const App = () => {
                 <CollectionGallery />
 
                 {/* About Section */}
-                <section id="about" className="py-48 bg-[#FAF9F6] border-t border-black/5 overflow-hidden">
-                    <div className="max-w-[1700px] mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-40 items-center">
+                <section id="about" className="py-20 md:py-48 bg-[#FAF9F6] border-t border-black/5 overflow-hidden">
+                    <div className="max-w-[1700px] mx-auto px-4 md:px-8 grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-40 items-center">
                         <div className="relative group overflow-hidden shadow-2xl">
                             <img src="/assets/hero-jewar.jpg" alt="Jewar Story" className="w-full h-auto grayscale transition-all duration-[1.5s] group-hover:grayscale-0 group-hover:scale-110" />
                             <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-1000"></div>
                         </div>
                         <div style={{ transitionDelay: '0.3s' }}>
                             <span className="text-[12px] tracking-[0.6em] text-gold uppercase block mb-8 font-extrabold">Our Legacy</span>
-                            <h2 className="text-7xl md:text-8xl font-display mb-14 leading-[1] tracking-tighter">The Spirit <br /> of Jewar</h2>
-                            <div className="space-y-10 text-xl font-light text-gray-600 leading-relaxed text-left border-l-4 border-gold/20 pl-16">
+                            <h2 className="text-5xl md:text-8xl font-display mb-14 leading-[1] tracking-tighter">The Spirit <br /> of Jewar</h2>
+                            <div className="space-y-10 text-xl font-light text-gray-600 leading-relaxed text-left border-l-4 border-gold/20 pl-8 md:pl-16">
                                 <p>Established with a vision to redefine Indian luxury, Jewar stands as a testament to the timeless art of jewellery making.</p>
                                 <p>Every piece is a dialogue between heritage and modernity, crafted to tell a story that transcends time.</p>
                             </div>

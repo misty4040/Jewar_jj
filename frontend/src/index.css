@@ -74,4 +74,18 @@
   .reveal.active {
     @apply opacity-100 translate-y-0;
   }
+
+  /* Staggered Product Card Animation */
+  .product-card {
+    opacity: 0;
+    animation: slideUp 0.8s ease-out forwards;
+  }
+  .product-card:nth-child(1) { animation-delay: 0ms; }
+  .product-card:nth-child(2) { animation-delay: 150ms; }
+  .product-card:nth-child(3) { animation-delay: 300ms; }
+  .product-card:nth-child(4) { animation-delay: 450ms; }
+  .product-card:nth-child(5) { animation-delay: 600ms; }
+  .product-card:nth-child(6) { animation-delay: 750ms; }
+  .product-card:nth-child(7) { animation-delay: 900ms; }
+  .product-card:nth-child(8) { animation-delay: 1050ms; }
 }

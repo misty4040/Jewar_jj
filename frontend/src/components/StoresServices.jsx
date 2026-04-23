@@ -26,20 +26,20 @@ const StoresServices = () => {
     ];
 
     return (
-        <section className="py-32 bg-white">
-            <div className="max-w-[1700px] mx-auto px-8">
+        <section className="py-16 md:py-32 bg-white">
+        <div className="max-w-[1700px] mx-auto px-6 md:px-8">
                 {/* Header Section */}
-                <div className="mb-20 reveal">
-                    <h2 className="text-4xl md:text-5xl font-sans font-black tracking-tight text-black mb-6">
-                        STORES & SERVICES
-                    </h2>
-                    <p className="text-lg text-gray-600 font-light max-w-2xl leading-relaxed">
-                        Discover our thoughtfully designed boutiques and personalized artisanal services across India and abroad.
-                    </p>
-                </div>
+            <div className="mb-12 md:mb-20 reveal">
+                <h2 className="text-3xl md:text-5xl font-sans font-black tracking-tight text-black mb-6">
+                    STORES & SERVICES
+                </h2>
+                <p className="text-lg text-gray-600 font-light max-w-2xl leading-relaxed">
+                    Discover our thoughtfully designed boutiques and personalized artisanal services across India and abroad.
+                </p>
+            </div>
 
                 {/* Services Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-16 lg:gap-20">
                     {services.map((service, i) => (
                         <div key={i} className="group reveal" style={{ transitionDelay: `${i * 0.2}s` }}>
                             {/* Image Container */}

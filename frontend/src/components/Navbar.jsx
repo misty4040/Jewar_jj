@@ -43,7 +43,7 @@ const Navbar = ({ activeCategory, onCategoryChange }) => {
       </div>
 
       {/* Main Integrated Header */}
-      <div className="max-w-[1800px] mx-auto px-10 h-24 flex justify-between items-center text-white">
+      <div className="max-w-[1800px] mx-auto px-6 md:px-10 h-20 md:h-24 flex justify-between items-center text-white">
         
         {/* Left Nav Group */}
         <div className="flex-1 hidden md:flex gap-10 items-center">
@@ -53,13 +53,13 @@ const Navbar = ({ activeCategory, onCategoryChange }) => {
 
         {/* Center Logo/Signature */}
         <div className="flex flex-col items-center justify-center">
-            <h1 className="font-display text-5xl md:text-6xl tracking-[0.4em] font-bold py-1 lowercase transition-transform duration-500 hover:scale-105">
-                {BRAND_NAME}<span className="text-gold opacity-50 text-2xl relative -top-4 ml-1">ā</span>
+            <h1 className="font-display text-3xl md:text-6xl tracking-[0.4em] font-bold py-1 lowercase transition-transform duration-500 hover:scale-105">
+                {BRAND_NAME}<span className="text-gold opacity-50 text-base md:text-2xl relative -top-2 md:-top-4 ml-1">ā</span>
             </h1>
         </div>
 
         {/* Right Utility Group */}
-        <div className="flex-1 flex justify-end gap-8 items-center">
+        <div className="flex-1 flex justify-end gap-4 md:gap-8 items-center">
           <Search size={20} className="hidden md:block cursor-pointer hover:text-gold transition-colors opacity-80 hover:opacity-100" />
           <User size={20} className="hidden md:block cursor-pointer hover:text-gold transition-colors opacity-80 hover:opacity-100" />
           <div className="relative group cursor-pointer">

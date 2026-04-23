@@ -29,18 +29,18 @@ import JewarLogo from './JewarLogo';
 
 const Footer = () => {
   return (
-    <footer className="bg-white text-[#1a1a1a] pt-24 pb-12 font-sans border-t border-gray-100">
-      <div className="max-w-[1800px] mx-auto px-8 lg:px-14">
+    <footer className="bg-white text-[#1a1a1a] pt-16 md:pt-24 pb-12 font-sans border-t border-gray-100">
+      <div className="max-w-[1800px] mx-auto px-6 md:px-8 lg:px-14">
         
         {/* Section 1: Reviews / Trust Bar */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-24 border-b border-gray-100">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-12 md:pb-24 border-b border-gray-100">
           {[
             { name: "Aarav S.", text: "Exceptional craftsmanship. The heritage collection at Jewar is truly one of a kind.", rating: 5 },
             { name: "Priya M.", text: "Bought our wedding bands here. The service was impeccable and the quality is stunning.", rating: 5 },
             { name: "Vikram R.", text: "The custom design process was so smooth. They brought my vision to life perfectly.", rating: 5 },
             { name: "Ananya K.", text: "Jewar has been our family's trusted jeweller for decades. Never fails to impress.", rating: 5 }
           ].map((review, i) => (
-            <div key={i} className="flex flex-col gap-4">
+            <div key={i} className="flex flex-col gap-4 text-center md:text-left items-center md:items-start">
               <div className="flex gap-1">
                 {[...Array(review.rating)].map((_, i) => (
                   <Star key={i} size={14} fill="#A67C00" color="#A67C00" />
@@ -53,7 +53,7 @@ const Footer = () => {
         </div>
 
         {/* Section 2: Main Grid Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-20 py-24">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-16 md:gap-y-20 py-12 md:py-24">
           
           {/* Column 1: Customer Care */}
           <div>

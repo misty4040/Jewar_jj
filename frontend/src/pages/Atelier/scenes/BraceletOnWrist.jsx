@@ -4,6 +4,8 @@ import Stage from '../../../components/maison/Stage';
 import { WristSilhouette, WRIST_LANDING, WRIST_VB } from '../../../components/maison/Silhouettes';
 import SparkleBurst from '../../../components/maison/SparkleBurst';
 import ContinueHint from '../../../components/maison/ContinueHint';
+import SceneTitle from '../../../components/maison/SceneTitle';
+import Hallmark from '../../../components/maison/Hallmark';
 import { BraceletLink } from '../../../components/maison/Jewels';
 
 const SCENE_VH = 340;
@@ -64,19 +66,15 @@ export default function BraceletOnWrist() {
 
   return (
     <section ref={ref} className="scene scene-ink" style={{ height: `${SCENE_VH}vh` }}>
-      <div style={{
-        position: 'sticky',
-        top: 0, height: '100vh',
-        display: 'grid',
-        gridTemplateColumns: 'minmax(500px, 1.25fr) minmax(320px, 1fr)',
-        alignItems: 'stretch',
-        maxWidth: 1600, margin: '0 auto',
-        overflow: 'hidden',
-      }}>
+      <div
+        className="scene-grid"
+        style={{ gridTemplateColumns: 'minmax(500px, 1.25fr) minmax(320px, 1fr)' }}
+      >
 
         {/* LEFT — stage */}
-        <div style={{ position: 'relative', height: '100vh' }}>
+        <div className="scene-stage" style={{ position: 'relative', height: '100vh' }}>
           <Stage anchor={ANCHOR} glow={glow} size="lg">
+            <SceneTitle progress={p} numeral="IV" name="Bracelet" italic="Bracelet" tone="dark" />
 
             {/* Wrist silhouette */}
             <motion.div
@@ -135,6 +133,8 @@ export default function BraceletOnWrist() {
               </div>
             </motion.div>
 
+            <Hallmark progress={p} settleAt={0.74} reference="JWR · MMXXVI · M.S" y={80} />
+
             <div className="mono" style={{
               position: 'absolute', right: 22, bottom: 18,
               color: 'rgba(227,207,160,0.7)',
@@ -147,7 +147,7 @@ export default function BraceletOnWrist() {
         </div>
 
         {/* RIGHT — text */}
-        <motion.div style={{ y: textY, opacity: textOpacity, padding: '0 56px', alignSelf: 'center' }}>
+        <motion.div className="scene-text" style={{ y: textY, opacity: textOpacity, padding: '0 56px', alignSelf: 'center' }}>
           <div className="label" style={{ color: 'var(--gold)', marginBottom: 22, display: 'flex', alignItems: 'center', gap: 14 }}>
             <span style={{ width: 36, height: 1, background: 'var(--gold)' }} />
             Scene № IV · The Bracelet

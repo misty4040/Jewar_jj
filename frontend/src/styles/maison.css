@@ -235,6 +235,43 @@ body.maison-cursor-hover .maison-cursor-ring {
   color: var(--ivory);
 }
 
+/* Sticky inner grid container used by every arrival scene. Styling is
+   driven from the scene file; this class only exists so mobile media
+   queries can override the grid without touching each scene. */
+.maison .scene-grid {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  max-width: 1600px;
+  margin: 0 auto;
+  overflow: hidden;
+  align-items: stretch;
+}
+
+/* Two-column desktop layouts are set inline per-scene, but collapse to
+   a single stacked column on narrow viewports. */
+@media (max-width: 900px) {
+  .maison .scene-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 40vh 60vh;
+    align-items: stretch;
+    padding: 0 !important;
+  }
+  .maison .scene-grid > .scene-stage {
+    order: -1;                /* stage always on top on mobile */
+    height: 60vh !important;
+    min-height: 420px;
+  }
+  .maison .scene-grid > .scene-text {
+    padding: 32px 24px !important;
+    align-self: start !important;
+  }
+  .maison .scene-grid > .scene-text h2 {
+    font-size: clamp(32px, 8vw, 48px) !important;
+  }
+}
+
 /* progress rail (left edge) */
 .maison-rail {
   position: fixed;
@@ -248,24 +285,75 @@ body.maison-cursor-hover .maison-cursor-ring {
   align-items: center;
 }
 .maison-rail .tick {
-  width: 1px;
+  width: 18px;           /* larger click target */
   height: 22px;
-  background: rgba(11,11,15,0.22);
-  transition: background 0.4s var(--ease), height 0.4s var(--ease);
+  background: transparent;
+  border: none;
+  padding: 0;
+  position: relative;
+  cursor: none;
+  transition: height 0.4s var(--ease);
 }
-.maison-rail .tick.active { background: #C9A96E; height: 38px; }
-.maison-rail.on-ink .tick { background: rgba(247,242,234,0.22); }
-.maison-rail.on-ink .tick.active { background: #C9A96E; }
+.maison-rail .tick::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  transform: translateX(-50%);
+  background: rgba(11,11,15,0.22);
+  transition: background 0.4s var(--ease), width 0.4s var(--ease);
+}
+.maison-rail .tick:hover::before { background: #C9A96E; width: 2px; }
+.maison-rail .tick.active { height: 38px; }
+.maison-rail .tick.active::before { background: #C9A96E; width: 2px; }
+.maison-rail.on-ink .tick::before { background: rgba(247,242,234,0.22); }
+.maison-rail.on-ink .tick:hover::before,
+.maison-rail.on-ink .tick.active::before { background: #C9A96E; }
 .maison-rail .idx {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.18em;
   color: inherit;
-  opacity: 0.55;
+  opacity: 0.65;
+}
+
+/* small "now playing" badge pinned bottom-left — shows the current
+   chapter at all times, stays in sync with scroll */
+.maison-scene-badge {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 22px;
+  color: var(--ink);
+  background: rgba(247, 242, 234, 0.72);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  pointer-events: none;
+}
+.maison-scene-badge .divider {
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: var(--gold);
+}
+.maison-scene-badge.on-ink {
+  color: var(--ivory);
+  background: rgba(11, 11, 15, 0.64);
+  border-color: var(--rule-dark);
 }
 
 @media (max-width: 900px) {
   .maison-rail { display: none; }
+  .maison-scene-badge { bottom: 12px; padding: 8px 16px; gap: 10px; }
+  .maison-scene-badge .divider { width: 14px; }
 }
 
 /* top brand bar inside maison */

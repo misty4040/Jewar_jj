@@ -4,6 +4,9 @@ import Stage from '../../../components/maison/Stage';
 import { NeckSilhouette, NECK_LANDING, NECK_VB } from '../../../components/maison/Silhouettes';
 import SparkleBurst from '../../../components/maison/SparkleBurst';
 import ContinueHint from '../../../components/maison/ContinueHint';
+import LivingJewel from '../../../components/maison/LivingJewel';
+import SceneTitle from '../../../components/maison/SceneTitle';
+import Hallmark from '../../../components/maison/Hallmark';
 import { Pendant } from '../../../components/maison/Jewels';
 
 const SCENE_VH = 320;
@@ -63,20 +66,15 @@ export default function NecklaceOnNeck() {
 
   return (
     <section ref={ref} className="scene scene-ink" style={{ height: `${SCENE_VH}vh` }}>
-      <div style={{
-        position: 'sticky',
-        top: 0,
-        height: '100vh',
-        display: 'grid',
-        gridTemplateColumns: 'minmax(500px, 1.25fr) minmax(320px, 1fr)',
-        alignItems: 'stretch',
-        maxWidth: 1600, margin: '0 auto',
-        overflow: 'hidden',
-      }}>
+      <div
+        className="scene-grid"
+        style={{ gridTemplateColumns: 'minmax(500px, 1.25fr) minmax(320px, 1fr)' }}
+      >
 
         {/* LEFT — stage */}
-        <div style={{ position: 'relative', height: '100vh' }}>
+        <div className="scene-stage" style={{ position: 'relative', height: '100vh' }}>
           <Stage anchor={ANCHOR} glow={glow}>
+            <SceneTitle progress={p} numeral="II" name="Pendant" italic="Pendant" tone="dark" />
             {/* Neck silhouette */}
             <motion.div
               style={{
@@ -147,7 +145,9 @@ export default function NecklaceOnNeck() {
                 willChange: 'transform',
               }}
             >
-              <Pendant size={220} />
+              <LivingJewel progress={p} settleAt={0.78} parallax={14} tilt={10}>
+                <Pendant size={220} />
+              </LivingJewel>
             </motion.div>
 
             {/* Sparkle */}
@@ -158,6 +158,8 @@ export default function NecklaceOnNeck() {
             }}>
               <SparkleBurst show={sparkle} count={18} size={260} />
             </div>
+
+            <Hallmark progress={p} settleAt={0.78} reference="JWR · MMXXVI · É.S" y={80} />
 
             <div className="mono" style={{
               position: 'absolute', right: 22, bottom: 18,
@@ -171,7 +173,7 @@ export default function NecklaceOnNeck() {
         </div>
 
         {/* RIGHT — editorial column */}
-        <motion.div style={{ y: textY, opacity: textOpacity, padding: '0 56px', alignSelf: 'center' }}>
+        <motion.div className="scene-text" style={{ y: textY, opacity: textOpacity, padding: '0 56px', alignSelf: 'center' }}>
           <div className="label" style={{ color: 'var(--gold)', marginBottom: 22, display: 'flex', alignItems: 'center', gap: 14 }}>
             <span style={{ width: 36, height: 1, background: 'var(--gold)' }} />
             Scene № II · The Pendant

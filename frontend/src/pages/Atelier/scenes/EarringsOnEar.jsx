@@ -4,6 +4,9 @@ import Stage from '../../../components/maison/Stage';
 import { EarSilhouette, EAR_LANDING, EAR_VB } from '../../../components/maison/Silhouettes';
 import SparkleBurst from '../../../components/maison/SparkleBurst';
 import ContinueHint from '../../../components/maison/ContinueHint';
+import LivingJewel from '../../../components/maison/LivingJewel';
+import SceneTitle from '../../../components/maison/SceneTitle';
+import Hallmark from '../../../components/maison/Hallmark';
 import { Earring } from '../../../components/maison/Jewels';
 
 const SCENE_VH = 320;
@@ -58,18 +61,13 @@ export default function EarringsOnEar() {
 
   return (
     <section ref={ref} className="scene" style={{ height: `${SCENE_VH}vh`, background: 'var(--ivory-2)' }}>
-      <div style={{
-        position: 'sticky',
-        top: 0, height: '100vh',
-        display: 'grid',
-        gridTemplateColumns: 'minmax(320px, 1fr) minmax(500px, 1.25fr)',
-        alignItems: 'stretch',
-        maxWidth: 1600, margin: '0 auto',
-        overflow: 'hidden',
-      }}>
+      <div
+        className="scene-grid"
+        style={{ gridTemplateColumns: 'minmax(320px, 1fr) minmax(500px, 1.25fr)' }}
+      >
 
         {/* LEFT — text */}
-        <motion.div style={{ y: textY, opacity: textOpacity, padding: '0 56px', alignSelf: 'center' }}>
+        <motion.div className="scene-text" style={{ y: textY, opacity: textOpacity, padding: '0 56px', alignSelf: 'center' }}>
           <div className="label" style={{ color: 'var(--gold-deep)', marginBottom: 22, display: 'flex', alignItems: 'center', gap: 14 }}>
             <span style={{ width: 36, height: 1, background: 'var(--gold)' }} />
             Scene № III · The Earring
@@ -98,8 +96,9 @@ export default function EarringsOnEar() {
         </motion.div>
 
         {/* RIGHT — stage */}
-        <div style={{ position: 'relative', height: '100vh' }}>
+        <div className="scene-stage" style={{ position: 'relative', height: '100vh' }}>
           <Stage anchor={ANCHOR} glow={glow} tone="ivory">
+            <SceneTitle progress={p} numeral="III" name="Earring" italic="Earring" tone="ivory" />
             {/* Ear silhouette */}
             <motion.div
               style={{
@@ -142,7 +141,9 @@ export default function EarringsOnEar() {
                 transition={settled ? { duration: 4, repeat: Infinity, ease: 'easeInOut' } : undefined}
                 style={{ transformOrigin: '50% 14%', width: '100%', height: '100%' }}
               >
-                <Earring size={180} />
+                <LivingJewel progress={p} settleAt={0.72} parallax={12} tilt={8}>
+                  <Earring size={180} />
+                </LivingJewel>
               </motion.div>
             </motion.div>
 
@@ -154,6 +155,8 @@ export default function EarringsOnEar() {
             }}>
               <SparkleBurst show={sparkle} count={14} size={220} />
             </div>
+
+            <Hallmark progress={p} settleAt={0.72} reference="JWR · MMXXVI · A.J" y={78} />
 
             <div className="mono" style={{
               position: 'absolute', right: 22, bottom: 18,

@@ -4,6 +4,9 @@ import Stage from '../../../components/maison/Stage';
 import { HandSilhouette, HAND_LANDING, HAND_VB } from '../../../components/maison/Silhouettes';
 import SparkleBurst from '../../../components/maison/SparkleBurst';
 import ContinueHint from '../../../components/maison/ContinueHint';
+import LivingJewel from '../../../components/maison/LivingJewel';
+import SceneTitle from '../../../components/maison/SceneTitle';
+import Hallmark from '../../../components/maison/Hallmark';
 import { Ring } from '../../../components/maison/Jewels';
 
 /**
@@ -97,20 +100,13 @@ export default function RingOnHand() {
 
   return (
     <section ref={ref} className="scene scene-ink" style={{ height: `${SCENE_VH}vh` }}>
-      <div style={{
-        position: 'sticky',
-        top: 0,
-        height: '100vh',
-        display: 'grid',
-        gridTemplateColumns: 'minmax(320px, 1fr) minmax(500px, 1.25fr)',
-        alignItems: 'stretch',
-        maxWidth: 1600,
-        margin: '0 auto',
-        overflow: 'hidden',
-      }}>
+      <div
+        className="scene-grid"
+        style={{ gridTemplateColumns: 'minmax(320px, 1fr) minmax(500px, 1.25fr)' }}
+      >
 
         {/* LEFT — editorial column */}
-        <motion.div style={{ y: textY, opacity: textOpacity, padding: '0 56px', alignSelf: 'center' }}>
+        <motion.div className="scene-text" style={{ y: textY, opacity: textOpacity, padding: '0 56px', alignSelf: 'center' }}>
           <div className="label" style={{ color: 'var(--gold)', marginBottom: 22, display: 'flex', alignItems: 'center', gap: 14 }}>
             <span style={{ width: 36, height: 1, background: 'var(--gold)' }} />
             Scene № I · The Ring
@@ -139,8 +135,9 @@ export default function RingOnHand() {
         </motion.div>
 
         {/* RIGHT — the 3D stage */}
-        <div style={{ position: 'relative', height: '100vh' }}>
+        <div className="scene-stage" style={{ position: 'relative', height: '100vh' }}>
           <Stage anchor={ANCHOR} glow={glowOpacity}>
+            <SceneTitle progress={p} numeral="I" name="Ring" italic="Ring" tone="dark" />
 
             {/* Hand silhouette on stage */}
             <motion.div
@@ -233,7 +230,9 @@ export default function RingOnHand() {
                   filter: ringFilter,
                 }}
               >
-                <Ring size={260} />
+                <LivingJewel progress={p} settleAt={0.78}>
+                  <Ring size={260} />
+                </LivingJewel>
               </motion.div>
             </motion.div>
 
@@ -249,6 +248,8 @@ export default function RingOnHand() {
             </div>
 
             {/* scene ID */}
+            <Hallmark progress={p} settleAt={0.78} reference="JWR · MMXXVI · S.J" y={76} />
+
             <div className="mono" style={{
               position: 'absolute', right: 22, bottom: 18,
               color: 'rgba(227,207,160,0.7)',

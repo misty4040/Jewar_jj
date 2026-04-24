@@ -36,7 +36,10 @@
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   position: relative;
-  overflow-x: hidden;
+  /* `overflow: clip` does NOT create a scroll container, so sticky
+     positioning on descendants continues to resolve against the window.
+     Do not use overflow: hidden here — it breaks the scrollytelling lock. */
+  overflow-x: clip;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -222,7 +225,10 @@ body.maison-cursor-hover .maison-cursor-ring {
 .maison .scene {
   position: relative;
   width: 100%;
-  overflow: hidden;
+  /* `overflow: clip` so element-level horizontal overflow is trimmed
+     without promoting the section to a scroll container (which would
+     break the sticky pin inside). */
+  overflow-x: clip;
 }
 .maison .scene-ink {
   background: var(--ink);

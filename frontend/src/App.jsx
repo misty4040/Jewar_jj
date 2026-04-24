@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import axios from 'axios';
 import Navbar from './components/Navbar';
 import ProductCard from './components/ProductCard';
@@ -8,10 +8,26 @@ import CollectionGallery from './components/CollectionGallery';
 import StoresServices from './components/StoresServices';
 import { ArrowRight } from 'lucide-react';
 
+const Atelier = lazy(() => import('./pages/Atelier/index.jsx'));
+
 const App = () => {
+    const [route, setRoute] = useState('home'); // 'home' | 'atelier'
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [category, setCategory] = useState('all');
+
+    const openAtelier = (e) => {
+        if (e && e.preventDefault) e.preventDefault();
+        setRoute('atelier');
+    };
+    const closeAtelier = () => {
+        setRoute('home');
+        // land the user back near the catalogue they were looking at
+        window.requestAnimationFrame(() => {
+            const el = document.getElementById('catalogue');
+            if (el) el.scrollIntoView({ behavior: 'auto', block: 'start' });
+        });
+    };
 
     useEffect(() => {
         fetchProducts();
@@ -35,6 +51,7 @@ const App = () => {
     };
 
     useEffect(() => {
+        if (route !== 'home') return;
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('active', 'opacity-100', 'translate-y-0');
@@ -43,7 +60,15 @@ const App = () => {
 
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
         return () => observer.disconnect();
-    }, [products]);
+    }, [products, route]);
+
+    if (route === 'atelier') {
+        return (
+            <Suspense fallback={<div style={{ background: '#F7F2EA', minHeight: '100vh' }} />}>
+                <Atelier onExit={closeAtelier} />
+            </Suspense>
+        );
+    }
 
     return (
         <div className="bg-[#0A0A0A] text-white min-h-screen selection:bg-gold selection:text-white">
@@ -66,7 +91,7 @@ const App = () => {
                             Crafted in Gold, <br />Designed for <br /><span className="italic font-display">Generations</span>
                         </h1>
                         <div className="flex gap-8 group">
-                            <a href="#catalogue" className="relative overflow-hidden bg-white text-black px-14 py-6 text-[13px] tracking-[0.3em] font-bold uppercase transition-all duration-500 hover:bg-gold hover:text-white flex items-center gap-4 shadow-2xl">
+                            <a href="#atelier" onClick={openAtelier} className="relative overflow-hidden bg-white text-black px-14 py-6 text-[13px] tracking-[0.3em] font-bold uppercase transition-all duration-500 hover:bg-gold hover:text-white flex items-center gap-4 shadow-2xl cursor-pointer">
                                 Explore Collection
                                 <ArrowRight size={18} className="group-hover:translate-x-2 transition-transform" />
                             </a>

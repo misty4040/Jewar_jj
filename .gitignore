@@ -1,1 +1,13 @@
 .vercel
+node_modules/
+**/node_modules/
+.DS_Store
+**/.DS_Store
+.env
+**/.env
+backend/uploads/*
+!backend/uploads/.gitkeep
+admin/dist/
+frontend/dist/
+*.log
+.cache/

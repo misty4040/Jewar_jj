@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { useParams, useNavigate, Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Cursor from '../../components/maison/Cursor';
 import FilmGrain from '../../components/maison/FilmGrain';
 import Monogram from '../../components/maison/Monogram';
 import MaisonProductCard from '../../components/maison/MaisonProductCard';
+import CategoryBanner from '../../components/maison/CategoryBanner';
 import Footer from '../../components/Footer';
 import { findCategory, relatedCategories } from '../../data/categories';
 import '../../styles/maison.css';
@@ -16,7 +17,8 @@ const SORTS = [
   { key: 'price-desc', label: 'Price · High' },
 ];
 
-const FILTERS = ['all', 'gold', 'platinum', 'diamond', 'pearl'];
+// Material keywords matched against the (free-form) product.material string.
+const MATERIALS = ['Diamond', 'Gold', 'Platinum', 'Pearl'];
 
 export default function CategoryDetail() {
   const { slug } = useParams();
@@ -24,8 +26,23 @@ export default function CategoryDetail() {
   const cat = findCategory(slug);
 
   const [sort, setSort] = useState('curated');
-  const [filter, setFilter] = useState('all');
+  const [selectedMaterials, setSelectedMaterials] = useState(() => new Set());
+  const [selectedStyles, setSelectedStyles] = useState(() => new Set());
+  const [selectedSubtypes, setSelectedSubtypes] = useState(() => new Set());
   const [scrolled, setScrolled] = useState(false);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+  // Reset filters & sort when navigating between categories. React docs
+  // recommend the in-render state-update pattern over setState-in-effect.
+  const [prevSlug, setPrevSlug] = useState(slug);
+  if (prevSlug !== slug) {
+    setPrevSlug(slug);
+    setSelectedMaterials(new Set());
+    setSelectedStyles(new Set());
+    setSelectedSubtypes(new Set());
+    setSort('curated');
+    setMobileFiltersOpen(false);
+  }
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' });
@@ -38,20 +55,177 @@ export default function CategoryDetail() {
     return () => window.removeEventListener('scroll', on);
   }, []);
 
+  // Available filter options + counts (computed from this category's pieces).
+  const styleOptions = useMemo(() => {
+    if (!cat) return [];
+    const counts = new Map();
+    cat.products.forEach((p) => {
+      if (!p.style) return;
+      counts.set(p.style, (counts.get(p.style) || 0) + 1);
+    });
+    return Array.from(counts.entries()).map(([name, count]) => ({ name, count }));
+  }, [cat]);
+
+  const subtypeOptions = useMemo(() => {
+    if (!cat) return [];
+    const counts = new Map();
+    cat.products.forEach((p) => {
+      if (!p.subtype) return;
+      counts.set(p.subtype, (counts.get(p.subtype) || 0) + 1);
+    });
+    return Array.from(counts.entries()).map(([name, count]) => ({ name, count }));
+  }, [cat]);
+
+  const materialOptions = useMemo(() => {
+    if (!cat) return [];
+    return MATERIALS.map((m) => ({
+      name: m,
+      count: cat.products.filter((p) =>
+        p.material.toLowerCase().includes(m.toLowerCase())
+      ).length,
+    })).filter((o) => o.count > 0);
+  }, [cat]);
+
   const products = useMemo(() => {
     if (!cat) return [];
-    let list = [...cat.products];
-    if (filter !== 'all') {
-      list = list.filter((p) => p.material.toLowerCase().includes(filter));
-    }
-    if (sort === 'newest') list.reverse();
+    let list = cat.products.filter((p) => {
+      if (selectedMaterials.size > 0) {
+        const matchesMaterial = Array.from(selectedMaterials).some((m) =>
+          p.material.toLowerCase().includes(m.toLowerCase())
+        );
+        if (!matchesMaterial) return false;
+      }
+      if (selectedStyles.size > 0 && !selectedStyles.has(p.style)) return false;
+      if (selectedSubtypes.size > 0 && !selectedSubtypes.has(p.subtype)) return false;
+      return true;
+    });
+    if (sort === 'newest') list = [...list].reverse();
     return list;
-  }, [cat, sort, filter]);
+  }, [cat, sort, selectedMaterials, selectedStyles, selectedSubtypes]);
+
+  const activeCount =
+    selectedMaterials.size + selectedStyles.size + selectedSubtypes.size;
+
+  const toggleIn = useCallback((setter) => (value) => {
+    setter((prev) => {
+      const next = new Set(prev);
+      if (next.has(value)) next.delete(value);
+      else next.add(value);
+      return next;
+    });
+  }, []);
+
+  const clearAll = () => {
+    setSelectedMaterials(new Set());
+    setSelectedStyles(new Set());
+    setSelectedSubtypes(new Set());
+  };
 
   if (!cat) return <Navigate to="/categories" replace />;
 
   const related = relatedCategories(slug, 4);
   const sceneTag = `SCENE · ${cat.numeral} · ${cat.name.toUpperCase()}`;
+
+  // Split the product grid so the banner sits as an editorial interlude
+  // after the first row (4 products on desktop / 2 on mobile).
+  const bannerCutoff = Math.min(4, products.length);
+  const firstBatch = products.slice(0, bannerCutoff);
+  const restBatch = products.slice(bannerCutoff);
+  const hasRestBatch = restBatch.length > 0;
+
+  const filterPanel = (
+    <div className="flex flex-col gap-10">
+      {/* Filter header */}
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-3">
+            <span
+              className="mono"
+              style={{ color: 'var(--ink)', fontSize: 11, letterSpacing: '0.4em' }}
+            >
+              Filters
+            </span>
+            <span
+              className="mono"
+              style={{
+                color: 'var(--gold-deep)',
+                fontSize: 10,
+                letterSpacing: '0.3em',
+                opacity: activeCount ? 1 : 0.4,
+              }}
+            >
+              {String(activeCount).padStart(2, '0')}
+            </span>
+          </div>
+          {activeCount > 0 && (
+            <button
+              type="button"
+              onClick={clearAll}
+              className="link-underline mono"
+              style={{ color: 'var(--gold-deep)', fontSize: 10, letterSpacing: '0.28em' }}
+            >
+              Clear ↗
+            </button>
+          )}
+        </div>
+        <div className="hairline-gold" style={{ maxWidth: '100%' }} />
+      </div>
+
+      {/* Sort */}
+      <FilterGroup title="Sort">
+        <div className="flex flex-col gap-3">
+          {SORTS.map((s) => {
+            const active = sort === s.key;
+            return (
+              <button
+                key={s.key}
+                type="button"
+                onClick={() => setSort(s.key)}
+                className="text-left mono transition-all"
+                style={{
+                  fontSize: 11,
+                  letterSpacing: '0.26em',
+                  color: active ? 'var(--gold-deep)' : 'var(--muted)',
+                  paddingLeft: active ? 12 : 0,
+                  borderLeft: `1px solid ${active ? 'var(--gold)' : 'transparent'}`,
+                }}
+              >
+                {s.label}
+              </button>
+            );
+          })}
+        </div>
+      </FilterGroup>
+
+      <FilterGroup title="Material Type">
+        <CheckboxList
+          options={materialOptions}
+          selected={selectedMaterials}
+          onToggle={toggleIn(setSelectedMaterials)}
+        />
+      </FilterGroup>
+
+      {styleOptions.length > 1 && (
+        <FilterGroup title="Design Type">
+          <CheckboxList
+            options={styleOptions}
+            selected={selectedStyles}
+            onToggle={toggleIn(setSelectedStyles)}
+          />
+        </FilterGroup>
+      )}
+
+      {subtypeOptions.length > 1 && (
+        <FilterGroup title={cat.subtypeLabel || 'Type'}>
+          <CheckboxList
+            options={subtypeOptions}
+            selected={selectedSubtypes}
+            onToggle={toggleIn(setSelectedSubtypes)}
+          />
+        </FilterGroup>
+      )}
+    </div>
+  );
 
   return (
     <div className="maison">
@@ -72,7 +246,6 @@ export default function CategoryDetail() {
 
       {/* HERO — full-bleed cinematic with image, gradient, numeral watermark */}
       <section className="relative h-screen min-h-[760px] overflow-hidden" style={{ background: 'var(--ink)' }}>
-        {/* photograph */}
         <img
           src={cat.hero.src}
           alt=""
@@ -89,11 +262,9 @@ export default function CategoryDetail() {
           }}
         />
 
-        {/* gradient layers */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/15 to-black/95" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-transparent to-black/35" />
 
-        {/* warm spotlight (Stage echo) */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -102,7 +273,6 @@ export default function CategoryDetail() {
           }}
         />
 
-        {/* hairline grid */}
         <div
           className="absolute inset-0 opacity-[0.045]"
           style={{
@@ -112,7 +282,6 @@ export default function CategoryDetail() {
           }}
         />
 
-        {/* Massive ghost numeral */}
         <div className="absolute right-[-8vw] top-1/2 -translate-y-1/2 pointer-events-none select-none">
           <span
             className="font-serif italic font-extralight leading-none block"
@@ -126,12 +295,10 @@ export default function CategoryDetail() {
           </span>
         </div>
 
-        {/* Content */}
         <div
           className="relative z-10 h-full max-w-[1800px] mx-auto px-6 md:px-14 pt-44 pb-16 flex flex-col justify-end"
           style={{ color: 'var(--ivory)' }}
         >
-          {/* breadcrumb */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -144,7 +311,6 @@ export default function CategoryDetail() {
             <span style={{ color: 'var(--gold)' }}>{cat.name}</span>
           </motion.div>
 
-          {/* chapter label with hairline */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -157,7 +323,6 @@ export default function CategoryDetail() {
             </span>
           </motion.div>
 
-          {/* Massive serif headline */}
           <motion.h1
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
@@ -168,7 +333,6 @@ export default function CategoryDetail() {
             <span className="italic font-extralight">{cat.name}</span>
           </motion.h1>
 
-          {/* tagline */}
           <motion.p
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -179,7 +343,6 @@ export default function CategoryDetail() {
             {cat.tagline}
           </motion.p>
 
-          {/* stat strip */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -206,99 +369,42 @@ export default function CategoryDetail() {
           </motion.div>
         </div>
 
-        {/* scroll cue */}
         <div className="absolute bottom-6 left-1/2 -translate-x-1/2 mono" style={{ color: 'rgba(247,242,234,0.4)', fontSize: 10, letterSpacing: '0.4em' }}>
           Scroll · Browse
         </div>
       </section>
 
-      {/* DESCRIPTION + filters — on warm parchment */}
+      {/* NOTE FROM THE BENCH — slim editorial band */}
       <section className="border-t" style={{ background: 'var(--ivory-2)', borderColor: 'var(--rule)' }}>
-        <div className="max-w-[1800px] mx-auto px-6 md:px-14 py-20 md:py-32">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 md:gap-20">
-            {/* Description */}
-            <div className="lg:col-span-7 max-w-2xl">
-              <div className="mono mb-5" style={{ color: 'var(--gold-deep)', fontSize: 11, letterSpacing: '0.36em' }}>
+        <div className="max-w-[1800px] mx-auto px-6 md:px-14 py-14 md:py-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-start">
+            <div className="lg:col-span-3">
+              <div className="mono mb-3" style={{ color: 'var(--gold-deep)', fontSize: 11, letterSpacing: '0.36em' }}>
                 A Note from the Bench
               </div>
-              <p
-                className="font-serif font-light leading-[1.3] tracking-[-0.005em]"
-                style={{ fontSize: 'clamp(22px, 2.2vw, 38px)', color: 'var(--ink)' }}
-              >
-                {cat.description}
-              </p>
-              <div className="hairline-gold mt-12" style={{ maxWidth: 200 }} />
-              <p className="font-serif italic mt-8" style={{ color: 'var(--muted)', fontSize: 16 }}>
-                — Signed at the Hazaribag bench
-              </p>
+              <div className="hairline-gold" style={{ maxWidth: 100 }} />
             </div>
-
-            {/* Filter rail */}
-            <aside
-              className="lg:col-span-5 lg:pl-12 lg:border-l flex flex-col gap-12"
-              style={{ borderColor: 'var(--rule)' }}
+            <p
+              className="lg:col-span-9 font-serif font-light leading-[1.35] tracking-[-0.005em]"
+              style={{ fontSize: 'clamp(20px, 1.9vw, 32px)', color: 'var(--ink)' }}
             >
-              <div>
-                <div className="mono mb-5" style={{ color: 'var(--muted)', fontSize: 10, letterSpacing: '0.4em' }}>
-                  Filter · Material
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {FILTERS.map((f) => {
-                    const active = filter === f;
-                    return (
-                      <button
-                        key={f}
-                        onClick={() => setFilter(f)}
-                        className="mono px-5 py-2.5 transition-all"
-                        style={{
-                          fontSize: 10,
-                          letterSpacing: '0.3em',
-                          color: active ? 'var(--ivory)' : 'var(--ink)',
-                          background: active ? 'var(--ink)' : 'transparent',
-                          border: `1px solid ${active ? 'var(--ink)' : 'var(--rule)'}`,
-                        }}
-                      >
-                        {f}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div>
-                <div className="mono mb-5" style={{ color: 'var(--muted)', fontSize: 10, letterSpacing: '0.4em' }}>
-                  Sort
-                </div>
-                <div className="flex flex-wrap gap-x-7 gap-y-3">
-                  {SORTS.map((s) => {
-                    const active = sort === s.key;
-                    return (
-                      <button
-                        key={s.key}
-                        onClick={() => setSort(s.key)}
-                        className="mono pb-1 transition-all"
-                        style={{
-                          fontSize: 10,
-                          letterSpacing: '0.3em',
-                          color: active ? 'var(--gold-deep)' : 'var(--muted)',
-                          borderBottom: `1px solid ${active ? 'var(--gold)' : 'transparent'}`,
-                        }}
-                      >
-                        {s.label}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            </aside>
+              {cat.description}
+              <span className="font-serif italic block mt-5" style={{ color: 'var(--muted)', fontSize: 16 }}>
+                — Signed at the Hazaribag bench
+              </span>
+            </p>
           </div>
         </div>
       </section>
 
-      {/* PRODUCT GRID */}
-      <section className="py-20 md:py-32" style={{ background: 'var(--ivory)' }}>
-        <div className="max-w-[1800px] mx-auto px-6 md:px-14">
-          <div className="flex items-end justify-between mb-14 md:mb-20 pb-7 border-b" style={{ borderColor: 'var(--rule)' }}>
+      {/* SHOP LAYOUT — left filters + right grid (with embedded banner) */}
+      <section
+        className="border-t"
+        style={{ background: 'var(--ivory)', borderColor: 'var(--rule)' }}
+      >
+        <div className="max-w-[1800px] mx-auto px-6 md:px-14 py-14 md:py-20">
+          {/* Selection heading */}
+          <div className="flex items-end justify-between mb-10 md:mb-14 pb-6 border-b" style={{ borderColor: 'var(--rule)' }}>
             <div>
               <div className="mono mb-3" style={{ color: 'var(--gold-deep)', fontSize: 11, letterSpacing: '0.4em' }}>
                 The Selection
@@ -322,26 +428,85 @@ export default function CategoryDetail() {
             </Link>
           </div>
 
-          {products.length === 0 ? (
-            <div className="text-center py-32" style={{ color: 'var(--muted)' }}>
-              <p className="font-serif italic" style={{ fontSize: 26 }}>
-                No pieces match this filter.
-              </p>
-              <button
-                onClick={() => setFilter('all')}
-                className="link-underline mono mt-6 inline-block"
-                style={{ color: 'var(--gold-deep)', fontSize: 10, letterSpacing: '0.34em' }}
+          {/* Mobile filter trigger */}
+          <button
+            type="button"
+            onClick={() => setMobileFiltersOpen((v) => !v)}
+            className="lg:hidden w-full mono mb-6 px-5 py-4 flex items-center justify-between"
+            style={{
+              border: `1px solid var(--rule)`,
+              fontSize: 11,
+              letterSpacing: '0.32em',
+              color: 'var(--ink)',
+              background: 'var(--ivory-2)',
+            }}
+          >
+            <span>
+              Filters {activeCount > 0 && (
+                <span style={{ color: 'var(--gold-deep)' }}>· {activeCount}</span>
+              )}
+            </span>
+            <span style={{ color: 'var(--gold-deep)' }}>{mobileFiltersOpen ? '—' : '+'}</span>
+          </button>
+
+          {/* Two-column shop grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14">
+            {/* FILTER RAIL */}
+            <aside className="lg:col-span-3">
+              {/* Mobile collapsible */}
+              <div
+                className={`lg:hidden ${mobileFiltersOpen ? 'block' : 'hidden'} mb-10 pb-10 border-b`}
+                style={{ borderColor: 'var(--rule)' }}
               >
-                Clear filter ↗
-              </button>
+                {filterPanel}
+              </div>
+
+              {/* Desktop sticky */}
+              <div className="hidden lg:block sticky top-28">{filterPanel}</div>
+            </aside>
+
+            {/* PRODUCT GRID */}
+            <div className="lg:col-span-9">
+              {products.length === 0 ? (
+                <div className="text-center py-32" style={{ color: 'var(--muted)' }}>
+                  <p className="font-serif italic" style={{ fontSize: 26 }}>
+                    No pieces match these filters.
+                  </p>
+                  <button
+                    onClick={clearAll}
+                    className="link-underline mono mt-6 inline-block"
+                    style={{ color: 'var(--gold-deep)', fontSize: 10, letterSpacing: '0.34em' }}
+                  >
+                    Clear filters ↗
+                  </button>
+                </div>
+              ) : (
+                <div
+                  className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-y-16 md:gap-y-20 gap-x-6 md:gap-x-10"
+                >
+                  {firstBatch.map((p, i) => (
+                    <MaisonProductCard key={p.id || i} product={p} index={i} />
+                  ))}
+
+                  {hasRestBatch && (
+                    <CategoryBanner
+                      image={cat.banner.image}
+                      word={cat.banner.word}
+                      name={cat.name}
+                    />
+                  )}
+
+                  {restBatch.map((p, i) => (
+                    <MaisonProductCard
+                      key={p.id || `rest-${i}`}
+                      product={p}
+                      index={firstBatch.length + i}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-20 md:gap-y-28 gap-x-8 md:gap-x-14">
-              {products.map((p, i) => (
-                <MaisonProductCard key={p.id || i} product={p} index={i} />
-              ))}
-            </div>
-          )}
+          </div>
         </div>
       </section>
 
@@ -351,7 +516,6 @@ export default function CategoryDetail() {
         style={{ background: 'var(--ink)', color: 'var(--ivory)', borderColor: 'var(--rule-dark)' }}
       >
         <div className="max-w-[1300px] mx-auto px-6 md:px-10 text-center">
-          {/* hallmark stamp */}
           <div className="flex items-center justify-center gap-4 mb-10">
             <span style={{ width: 36, height: 1, background: 'var(--gold)' }} />
             <span className="mono" style={{ color: 'var(--gold)', fontSize: 11, letterSpacing: '0.36em' }}>
@@ -460,6 +624,93 @@ export default function CategoryDetail() {
       </section>
 
       <Footer />
+    </div>
+  );
+}
+
+function FilterGroup({ title, children }) {
+  return (
+    <div>
+      <div
+        className="mono mb-5"
+        style={{ color: 'var(--ink)', fontSize: 10, letterSpacing: '0.4em', opacity: 0.85 }}
+      >
+        {title}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function CheckboxList({ options, selected, onToggle }) {
+  if (!options || options.length === 0) {
+    return (
+      <div
+        className="mono"
+        style={{ color: 'var(--muted)', fontSize: 10, letterSpacing: '0.26em' }}
+      >
+        — none —
+      </div>
+    );
+  }
+  return (
+    <div className="flex flex-col gap-3">
+      {options.map((opt) => {
+        const isOn = selected.has(opt.name);
+        return (
+          <button
+            key={opt.name}
+            type="button"
+            onClick={() => onToggle(opt.name)}
+            className="group flex items-center justify-between w-full text-left transition-colors"
+            style={{ color: isOn ? 'var(--ink)' : 'var(--muted)' }}
+          >
+            <span className="flex items-center gap-3">
+              <span
+                aria-hidden
+                className="inline-flex items-center justify-center transition-all"
+                style={{
+                  width: 14,
+                  height: 14,
+                  border: `1px solid ${isOn ? 'var(--gold)' : 'var(--rule)'}`,
+                  background: isOn ? 'var(--gold)' : 'transparent',
+                }}
+              >
+                {isOn && (
+                  <span
+                    style={{
+                      width: 6,
+                      height: 6,
+                      background: 'var(--ink)',
+                    }}
+                  />
+                )}
+              </span>
+              <span
+                className="font-serif"
+                style={{
+                  fontSize: 15,
+                  letterSpacing: '0.005em',
+                  color: 'inherit',
+                }}
+              >
+                {opt.name}
+              </span>
+            </span>
+            <span
+              className="mono"
+              style={{
+                fontSize: 10,
+                letterSpacing: '0.26em',
+                color: isOn ? 'var(--gold-deep)' : 'var(--muted)',
+                opacity: 0.7,
+              }}
+            >
+              {String(opt.count).padStart(2, '0')}
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
 }

@@ -1,0 +1,446 @@
+/* =====================================================================
+   MAISON · Scoped design tokens & utilities for The Atelier experience.
+   Everything is namespaced under .maison so the existing home page
+   palette, typography and interactions remain untouched.
+   ===================================================================== */
+
+.maison {
+  --ivory: #F7F2EA;
+  --ivory-2: #EFE8DC;
+  --ivory-3: #E4DCCB;
+  --ink: #0B0B0F;
+  --ink-2: #151519;
+  --ink-3: #22222A;
+  --gold: #C9A96E;
+  --gold-deep: #A8884E;
+  --gold-soft: #E3CFA0;
+  --emerald: #0F3D2E;
+  --burgundy: #5C1A1B;
+  --rule: rgba(11, 11, 15, 0.14);
+  --rule-dark: rgba(247, 242, 234, 0.18);
+  --muted: #6B6456;
+  --muted-dark: #8A8372;
+
+  --font-serif: "Cormorant Garamond", "EB Garamond", Georgia, serif;
+  --font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+
+  --track-wide: 0.22em;
+  --track-mid: 0.14em;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  background: var(--ivory);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  position: relative;
+  /* `overflow: clip` does NOT create a scroll container, so sticky
+     positioning on descendants continues to resolve against the window.
+     Do not use overflow: hidden here — it breaks the scrollytelling lock. */
+  overflow-x: clip;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .maison, .maison * { cursor: none; }
+}
+
+/* ---------- typography helpers ---------- */
+.maison .serif        { font-family: var(--font-serif); font-weight: 400; letter-spacing: -0.005em; }
+.maison .serif-italic { font-family: var(--font-serif); font-style: italic; font-weight: 400; }
+.maison .label        { font-family: var(--font-sans); font-size: 11px; letter-spacing: var(--track-wide); text-transform: uppercase; font-weight: 500; }
+.maison .label-sm     { font-family: var(--font-sans); font-size: 10px; letter-spacing: var(--track-wide); text-transform: uppercase; font-weight: 500; }
+.maison .mono         { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; }
+
+.maison ::selection { background: var(--gold); color: var(--ink); }
+
+/* ---------- hairlines ---------- */
+.maison .hairline      { height: 1px; background: var(--rule); width: 100%; }
+.maison .hairline-gold { height: 1px; width: 100%; background: linear-gradient(90deg, transparent, var(--gold) 20%, var(--gold) 80%, transparent); }
+
+/* ---------- outlined pill button ---------- */
+.maison .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 28px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: all 0.5s var(--ease);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+}
+.maison .btn::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: var(--gold);
+  transform: translateY(101%);
+  transition: transform 0.6s var(--ease);
+  z-index: 0;
+}
+.maison .btn > * { position: relative; z-index: 1; }
+.maison .btn:hover { color: var(--ink); border-color: var(--gold); }
+.maison .btn:hover::before { transform: translateY(0); }
+.maison .btn .dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
+
+.maison .link-underline {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 4px;
+  color: inherit;
+  text-decoration: none;
+}
+.maison .link-underline::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(1);
+  transform-origin: right;
+  transition: transform 0.7s var(--ease);
+}
+.maison .link-underline:hover::after { transform: scaleX(0); transform-origin: left; }
+
+/* ---------- chiaroscuro placeholder ---------- */
+.maison .img-placeholder {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.04), transparent 60%),
+    linear-gradient(135deg, #1a1a20 0%, #0b0b0f 50%, #14141a 100%);
+  color: rgba(247, 242, 234, 0.55);
+}
+.maison .img-placeholder::before {
+  content: "";
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(45deg, transparent 0 24px, rgba(201, 169, 110, 0.035) 24px 25px);
+  pointer-events: none;
+}
+.maison .img-placeholder::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.55) 100%);
+  pointer-events: none;
+}
+.maison .img-placeholder .ph-label {
+  position: absolute; left: 18px; bottom: 16px;
+  font-family: var(--font-mono); font-size: 9px;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(201, 169, 110, 0.75);
+  line-height: 1.5; max-width: 70%; z-index: 2;
+  white-space: pre-line;
+}
+.maison .img-placeholder .ph-number {
+  position: absolute; top: 18px; right: 20px;
+  font-family: var(--font-mono); font-size: 9px;
+  letter-spacing: 0.12em;
+  color: rgba(247, 242, 234, 0.4); z-index: 2;
+}
+.maison .img-placeholder .ph-crosshair {
+  position: absolute; inset: 14px;
+  border: 1px solid rgba(201, 169, 110, 0.12);
+  pointer-events: none; z-index: 1;
+}
+.maison .img-placeholder.ivory {
+  background:
+    radial-gradient(ellipse at 30% 30%, rgba(255,255,255,0.4), transparent 60%),
+    linear-gradient(135deg, #EFE8DC 0%, #E4DCCB 50%, #D8CEB8 100%);
+  color: rgba(11, 11, 15, 0.5);
+}
+.maison .img-placeholder.ivory .ph-label    { color: rgba(11, 11, 15, 0.55); }
+.maison .img-placeholder.ivory .ph-number   { color: rgba(11, 11, 15, 0.4); }
+.maison .img-placeholder.ivory .ph-crosshair{ border-color: rgba(11, 11, 15, 0.08); }
+
+/* ---------- reference photo wrapper (soft vignette + desaturation) ---------- */
+.maison .ref-photo {
+  position: relative;
+  overflow: hidden;
+}
+.maison .ref-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: saturate(0.75) contrast(1.02) brightness(0.95);
+}
+.maison .ref-photo::after {
+  content: "";
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.55) 100%);
+}
+
+/* ---------- film grain (fixed overlay while .maison page is mounted) ---------- */
+.maison-grain {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.055;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ---------- gold-dot cursor ---------- */
+.maison-cursor-dot {
+  position: fixed; top: 0; left: 0;
+  width: 6px; height: 6px;
+  background: #0B0B0F;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s var(--ease), height 0.3s var(--ease), background 0.3s var(--ease);
+  mix-blend-mode: difference;
+}
+.maison-cursor-ring {
+  position: fixed; top: 0; left: 0;
+  width: 28px; height: 28px;
+  border: 1px solid rgba(201, 169, 110, 0.55);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.35s var(--ease), height 0.35s var(--ease), border-color 0.35s var(--ease);
+}
+body.maison-cursor-hover .maison-cursor-dot {
+  width: 10px; height: 10px;
+  background: #C9A96E;
+  mix-blend-mode: normal;
+}
+body.maison-cursor-hover .maison-cursor-ring {
+  width: 56px; height: 56px;
+  border-color: #C9A96E;
+}
+@media (hover: none), (pointer: coarse) {
+  .maison-cursor-dot, .maison-cursor-ring { display: none; }
+}
+
+/* ---------- scene chrome ---------- */
+.maison .scene {
+  position: relative;
+  width: 100%;
+  /* `overflow: clip` so element-level horizontal overflow is trimmed
+     without promoting the section to a scroll container (which would
+     break the sticky pin inside). */
+  overflow-x: clip;
+}
+.maison .scene-ink {
+  background: var(--ink);
+  color: var(--ivory);
+}
+
+/* Sticky inner grid container used by every arrival scene. Styling is
+   driven from the scene file; this class only exists so mobile media
+   queries can override the grid without touching each scene. */
+.maison .scene-grid {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  max-width: 1600px;
+  margin: 0 auto;
+  overflow: hidden;
+  align-items: stretch;
+}
+
+/* Two-column desktop layouts are set inline per-scene, but collapse to
+   a single stacked column on narrow viewports. */
+@media (max-width: 900px) {
+  .maison .scene-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 40vh 60vh;
+    align-items: stretch;
+    padding: 0 !important;
+  }
+  .maison .scene-grid > .scene-stage {
+    order: -1;                /* stage always on top on mobile */
+    height: 60vh !important;
+    min-height: 420px;
+  }
+  .maison .scene-grid > .scene-text {
+    padding: 32px 24px !important;
+    align-self: start !important;
+  }
+  .maison .scene-grid > .scene-text h2 {
+    font-size: clamp(32px, 8vw, 48px) !important;
+  }
+}
+
+/* progress rail (left edge) */
+.maison-rail {
+  position: fixed;
+  left: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+}
+.maison-rail .tick {
+  width: 18px;           /* larger click target */
+  height: 22px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  position: relative;
+  cursor: none;
+  transition: height 0.4s var(--ease);
+}
+.maison-rail .tick::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  transform: translateX(-50%);
+  background: rgba(11,11,15,0.22);
+  transition: background 0.4s var(--ease), width 0.4s var(--ease);
+}
+.maison-rail .tick:hover::before { background: #C9A96E; width: 2px; }
+.maison-rail .tick.active { height: 38px; }
+.maison-rail .tick.active::before { background: #C9A96E; width: 2px; }
+.maison-rail.on-ink .tick::before { background: rgba(247,242,234,0.22); }
+.maison-rail.on-ink .tick:hover::before,
+.maison-rail.on-ink .tick.active::before { background: #C9A96E; }
+.maison-rail .idx {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: inherit;
+  opacity: 0.65;
+}
+
+/* small "now playing" badge pinned bottom-left — shows the current
+   chapter at all times, stays in sync with scroll */
+.maison-scene-badge {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 22px;
+  color: var(--ink);
+  background: rgba(247, 242, 234, 0.72);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  pointer-events: none;
+}
+.maison-scene-badge .divider {
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: var(--gold);
+}
+.maison-scene-badge.on-ink {
+  color: var(--ivory);
+  background: rgba(11, 11, 15, 0.64);
+  border-color: var(--rule-dark);
+}
+
+@media (max-width: 900px) {
+  .maison-rail { display: none; }
+  .maison-scene-badge { bottom: 12px; padding: 8px 16px; gap: 10px; }
+  .maison-scene-badge .divider { width: 14px; }
+}
+
+/* top brand bar inside maison */
+.maison-top {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 60;
+  padding: 22px 34px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  color: inherit;
+  background: transparent;
+  transition: background 0.5s var(--ease), border 0.5s var(--ease), padding 0.5s var(--ease);
+}
+.maison-top.scrolled {
+  padding: 14px 34px;
+  background: rgba(247,242,234,0.88);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--rule);
+}
+.maison-top.on-ink {
+  color: var(--ivory);
+}
+.maison-top.on-ink.scrolled {
+  background: rgba(11,11,15,0.72);
+  border-bottom-color: var(--rule-dark);
+}
+.maison-top .crest {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none; color: inherit;
+  justify-self: center;
+}
+.maison-top .crest .wordmark {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+.maison-top .exit {
+  justify-self: end;
+  background: none;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 9px 18px;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: inherit;
+  transition: background 0.4s var(--ease), color 0.4s var(--ease);
+}
+.maison-top .exit:hover {
+  background: var(--gold);
+  color: var(--ink);
+  border-color: var(--gold);
+}
+.maison-top .est {
+  justify-self: start;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+@media (max-width: 720px) {
+  .maison-top { grid-template-columns: 1fr auto; padding: 16px 20px; }
+  .maison-top .est { display: none; }
+  .maison-top .crest .wordmark { font-size: 15px; }
+}
+
+/* sparkle bursts used after jewelry lands */
+.maison-sparkle {
+  position: absolute;
+  width: 4px; height: 4px;
+  background: radial-gradient(circle, #FFF6DD 0%, #E3CFA0 40%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(0.3px);
+}
+
+/* route overlay (fade to ivory on enter / exit) */
+.maison-overlay {
+  position: fixed; inset: 0;
+  background: var(--ivory);
+  z-index: 9990;
+  pointer-events: none;
+}

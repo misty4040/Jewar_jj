@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Search, ShoppingBag, User, Menu, X } from 'lucide-react';
 
 /**
@@ -47,16 +48,17 @@ const Navbar = ({ activeCategory, onCategoryChange }) => {
         
         {/* Left Nav Group */}
         <div className="flex-1 hidden md:flex gap-10 items-center">
-          <a href="#shop" className="boutique-link text-[13px] tracking-[0.2em] font-medium py-2">SHOP</a>
-          <a href="#about" className="boutique-link text-[13px] tracking-[0.2em] font-medium py-2">STORY</a>
+          <Link to="/categories" className="boutique-link text-[13px] tracking-[0.2em] font-medium py-2">CATEGORIES</Link>
+          <Link to="/atelier" className="boutique-link text-[13px] tracking-[0.2em] font-medium py-2">ATELIER</Link>
+          <a href="/#about" className="boutique-link text-[13px] tracking-[0.2em] font-medium py-2">STORY</a>
         </div>
 
         {/* Center Logo/Signature */}
-        <div className="flex flex-col items-center justify-center">
+        <Link to="/" className="flex flex-col items-center justify-center">
             <h1 className="font-display text-3xl md:text-6xl tracking-[0.4em] font-bold py-1 lowercase transition-transform duration-500 hover:scale-105">
                 {BRAND_NAME}<span className="text-gold opacity-50 text-base md:text-2xl relative -top-2 md:-top-4 ml-1">ā</span>
             </h1>
-        </div>
+        </Link>
 
         {/* Right Utility Group */}
         <div className="flex-1 flex justify-end gap-4 md:gap-8 items-center">
@@ -87,14 +89,17 @@ const Navbar = ({ activeCategory, onCategoryChange }) => {
 
       {/* Mobile Menu */}
       <div className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out bg-black/95 ${isMobileMenuOpen ? 'max-h-screen' : 'max-h-0'}`}>
-        <div className="flex flex-col items-center py-16 gap-10 text-[14px] tracking-[0.3em] text-white">
+        <div className="flex flex-col items-center py-12 gap-8 text-[14px] tracking-[0.3em] text-white">
+          <Link to="/categories" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-gold transition-colors">CATEGORIES</Link>
+          <Link to="/atelier" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-gold transition-colors">ATELIER</Link>
+          <a href="/#about" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-gold transition-colors">STORY</a>
+          <div className="w-12 h-[1px] bg-gold/30 mt-4"></div>
+          <span className="text-[10px] tracking-[0.5em] text-white/40 uppercase">By Material</span>
           {CATEGORIES.map((cat) => (
-            <button key={cat} onClick={() => {onCategoryChange(cat); setIsMobileMenuOpen(false);}} className="hover:text-gold transition-colors">
+            <button key={cat} onClick={() => { onCategoryChange && onCategoryChange(cat); setIsMobileMenuOpen(false); }} className="hover:text-gold transition-colors">
               {cat}
             </button>
           ))}
-          <div className="w-12 h-[1px] bg-gold/30 mt-6"></div>
-          <a href="#contact" className="py-2 opacity-60">CONTACT</a>
         </div>
       </div>
     </nav>

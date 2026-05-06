@@ -7,7 +7,7 @@ const StoresServices = () => {
             description: "Step into our world of luxury. Experience our collections in person at our flagship locations.",
             cta: "VISIT OUR STORE",
             link: "#stores",
-            image: "/assets/service-boutique.png"
+            image: "/assets/boutique.png"
         },
         {
             title: "PIERCING STUDIO",

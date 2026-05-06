@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import Home from './pages/Home';
 import CategoriesLanding from './pages/Categories/Landing';
 import CategoryDetail from './pages/Categories/Detail';
+import ProductDetail from './pages/Categories/ProductDetail';
 
 const Atelier = lazy(() => import('./pages/Atelier/index.jsx'));
 
@@ -24,6 +25,7 @@ const App = () => (
         />
         <Route path="/categories" element={<CategoriesLanding />} />
         <Route path="/categories/:slug" element={<CategoryDetail />} />
+        <Route path="/categories/:slug/:productId" element={<ProductDetail />} />
         <Route path="*" element={<Home />} />
     </Routes>
 );

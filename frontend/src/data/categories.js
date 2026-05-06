@@ -213,12 +213,42 @@ export const CATEGORIES = [
     subtypeLabel: 'Earring Type',
     banner: { image: U(IMG.earring), word: 'EARRING' },
     products: [
-      { id: 'e1', name: 'Akoya Drop',                 material: '18k Gold · Pearl',           image: U(IMG.earring),     style: 'Modern',   subtype: 'Drop' },
-      { id: 'e2', name: 'Jhumka Royale',              material: '22k Gold · Hand-engraved',   image: U(IMG.goldEarring), style: 'Heritage', subtype: 'Jhumka' },
-      { id: 'e3', name: 'Stud Solitaire',             material: 'Platinum · Diamond',         image: U(IMG.earring),     style: 'Modern',   subtype: 'Stud' },
-      { id: 'e4', name: 'Chandbali Heritage',         material: '22k Gold · Polki',           image: U(IMG.goldEarring), style: 'Bridal',   subtype: 'Chandbali' },
-      { id: 'e5', name: 'Hoop de Paris',              material: '18k Gold · Polished',        image: U(IMG.earring),     style: 'Modern',   subtype: 'Hoop' },
-      { id: 'e6', name: 'Tassel Lariat Earrings',     material: '18k Gold · Pearl',           image: U(IMG.goldEarring), style: 'Antique',  subtype: 'Drop' },
+      {
+        id: 'e1', name: 'Akoya Drop', material: '18k Gold · Pearl',
+        image: U(IMG.earring), style: 'Modern', subtype: 'Drop',
+        images: [U(IMG.earring), U(IMG.goldEarring), U(IMG.pendant), U(IMG.flatlay), U(IMG.setEditorial)],
+        detail: 'A single Akoya pearl, harvested from the tidal waters of Ise Bay, capped in matte 18k gold. The wire is hand-struck — never cast. Designed to rest at the lobe with quiet authority, the nacre layer is aged two full years before selection.',
+      },
+      {
+        id: 'e2', name: 'Jhumka Royale', material: '22k Gold · Hand-engraved',
+        image: U(IMG.goldEarring), style: 'Heritage', subtype: 'Jhumka',
+        images: [U(IMG.goldEarring), U(IMG.earring), U(IMG.setEditorial), U(IMG.flatlay), U(IMG.choker)],
+        detail: 'Our Jhumka is cast as a single form in 22k gold — the interior dome hand-engraved by a craftsman in Hazaribag who has turned this pattern for thirty years. Worn only once and always remembered. The bell hangs free on a hand-forged pivot.',
+      },
+      {
+        id: 'e3', name: 'Stud Solitaire', material: 'Platinum · Diamond',
+        image: U(IMG.earring), style: 'Modern', subtype: 'Stud',
+        images: [U(IMG.earring), U(IMG.diamondCu), U(IMG.ring), U(IMG.flatlay), U(IMG.goldEarring)],
+        detail: 'A round brilliant of 0.40 carats, set in platinum six-claw. The post is threaded — never pushed — so the back sits flush and the stone tilts forward to catch the light. Graded D-VS1, certified by GIA.',
+      },
+      {
+        id: 'e4', name: 'Chandbali Heritage', material: '22k Gold · Polki',
+        image: U(IMG.goldEarring), style: 'Bridal', subtype: 'Chandbali',
+        images: [U(IMG.goldEarring), U(IMG.setEditorial), U(IMG.flatlay), U(IMG.earring), U(IMG.necklaceLay)],
+        detail: 'The chandbali — named for the crescent moon — is the crown of the bridal ear. Our version in 22k with uncut Polki diamonds is a direct translation of 17th-century Mughal court jewellery, made for a generation that will inherit it.',
+      },
+      {
+        id: 'e5', name: 'Hoop de Paris', material: '18k Gold · Polished',
+        image: U(IMG.earring), style: 'Modern', subtype: 'Hoop',
+        images: [U(IMG.earring), U(IMG.goldEarring), U(IMG.pendant), U(IMG.setEditorial), U(IMG.flatlay)],
+        detail: 'A 35mm tube hoop, drawn from 18k yellow gold and polished to a mirror finish. The seam is invisible — the tube is closed by laser, not solder. Light-catching, wrist-weight, permanently in style.',
+      },
+      {
+        id: 'e6', name: 'Tassel Lariat Earrings', material: '18k Gold · Pearl',
+        image: U(IMG.goldEarring), style: 'Antique', subtype: 'Drop',
+        images: [U(IMG.goldEarring), U(IMG.earring), U(IMG.pendant), U(IMG.choker), U(IMG.setEditorial)],
+        detail: 'Seven Akoya pearls hang from a hand-woven 18k gold lariat, each pearl graded for roundness and lustre by eye. The lariat hook is designed to be worn at multiple lengths — at the shoulder or below the collarbone.',
+      },
     ],
   },
   {
@@ -278,4 +308,19 @@ export function findCategory(slug) {
 // Suggest related categories (cross-sell), excluding self.
 export function relatedCategories(slug, n = 3) {
   return CATEGORIES.filter((c) => c.slug !== slug).slice(0, n);
+}
+
+// Returns an ordered gallery of up to 5 images for a product.
+// Uses the product's own `images` array if defined, otherwise derives
+// from the category's image pool (deduped, primary image first).
+export function productGallery(product, cat) {
+  if (product.images?.length) return product.images;
+  const seen = new Set();
+  const pool = [];
+  for (const p of cat.products) {
+    if (!seen.has(p.image)) { seen.add(p.image); pool.push(p.image); }
+  }
+  const primaryIdx = pool.indexOf(product.image);
+  if (primaryIdx > 0) { pool.splice(primaryIdx, 1); pool.unshift(product.image); }
+  return pool.slice(0, 5);
 }

@@ -1,109 +1,109 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ShoppingBag, User, Menu, X } from 'lucide-react';
+import api from '../lib/api';
 
-/**
- * BRAND CONSTANTS
- * Optimized for the Shopify Sona Theme aesthetic
- */
-const BRAND_NAME = "jewar";
-const ANNOUNCEMENT_TEXT = [
-  "FREE SHIPPING FOR ALL ORDERS ABOVE $199",
-  "TIMELESS GOLD COLLECTION",
-  "WEARABLE HERITAGE",
-  "CRAFTED TO LAST",
-  "TIMELESS JEWELLERY PIECES"
+const BRAND_NAME_DEFAULT = 'jewar';
+const ANNOUNCEMENTS_DEFAULT = [
+    'FREE SHIPPING FOR ALL ORDERS ABOVE $199',
+    'TIMELESS GOLD COLLECTION',
+    'WEARABLE HERITAGE',
+    'CRAFTED TO LAST',
+    'TIMELESS JEWELLERY PIECES',
 ];
-const CATEGORIES = ["GOLD", "SILVER", "PLATINUM", "DIAMOND", "GEMSTONES", "INVESTMENTS"];
+const MATERIALS_DEFAULT = ['GOLD', 'SILVER', 'PLATINUM', 'DIAMOND', 'GEMSTONES', 'INVESTMENTS'];
 
 const Navbar = ({ activeCategory, onCategoryChange }) => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [brand, setBrand] = useState({ name: BRAND_NAME_DEFAULT });
+    const [announcements, setAnnouncements] = useState(ANNOUNCEMENTS_DEFAULT);
+    const [materials, setMaterials] = useState(MATERIALS_DEFAULT);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    useEffect(() => {
+        api.get('/api/settings').then((res) => {
+            const map = res.data || {};
+            if (map.brand) setBrand(map.brand);
+            if (Array.isArray(map.announcements) && map.announcements.length) setAnnouncements(map.announcements);
+            if (Array.isArray(map.materials) && map.materials.length) setMaterials(map.materials);
+        }).catch(() => {});
+    }, []);
 
-  return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 overflow-hidden ${isScrolled ? 'bg-black/80 backdrop-blur-lg shadow-xl' : 'bg-transparent shadow-none'}`}>
-      
-      {/* Announcement Bar (Shopify Style Marquee) */}
-      <div className="h-10 bg-black text-white flex items-center overflow-hidden border-b border-white/10">
-        <div className="animate-marquee whitespace-nowrap flex gap-12 items-center">
-          {[...ANNOUNCEMENT_TEXT, ...ANNOUNCEMENT_TEXT].map((text, i) => (
-            <div key={i} className="flex items-center gap-12 group">
-              <span className="text-[10px] tracking-[0.3em] font-medium opacity-80">{text}</span>
-              <span className="w-1 h-1 bg-white/40 rounded-full"></span>
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 50);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    return (
+        <nav className={`fixed top-0 w-full z-50 transition-all duration-500 overflow-hidden ${isScrolled ? 'bg-black/80 backdrop-blur-lg shadow-xl' : 'bg-transparent shadow-none'}`}>
+            <div className="h-10 bg-black text-white flex items-center overflow-hidden border-b border-white/10">
+                <div className="animate-marquee whitespace-nowrap flex gap-12 items-center">
+                    {[...announcements, ...announcements].map((text, i) => (
+                        <div key={i} className="flex items-center gap-12 group">
+                            <span className="text-[10px] tracking-[0.3em] font-medium opacity-80">{text}</span>
+                            <span className="w-1 h-1 bg-white/40 rounded-full"></span>
+                        </div>
+                    ))}
+                </div>
             </div>
-          ))}
-        </div>
-      </div>
 
-      {/* Main Integrated Header */}
-      <div className="max-w-[1800px] mx-auto px-6 md:px-10 h-20 md:h-24 flex justify-between items-center text-white">
-        
-        {/* Left Nav Group */}
-        <div className="flex-1 hidden md:flex gap-10 items-center">
-          <Link to="/categories" className="boutique-link text-[13px] tracking-[0.2em] font-medium py-2">CATEGORIES</Link>
-          <Link to="/atelier" className="boutique-link text-[13px] tracking-[0.2em] font-medium py-2">ATELIER</Link>
-          <a href="/#about" className="boutique-link text-[13px] tracking-[0.2em] font-medium py-2">STORY</a>
-        </div>
+            <div className="max-w-[1800px] mx-auto px-6 md:px-10 h-20 md:h-24 flex justify-between items-center text-white">
+                <div className="flex-1 hidden md:flex gap-10 items-center">
+                    <Link to="/categories" className="boutique-link text-[13px] tracking-[0.2em] font-medium py-2">CATEGORIES</Link>
+                    <Link to="/atelier" className="boutique-link text-[13px] tracking-[0.2em] font-medium py-2">ATELIER</Link>
+                    <a href="/#about" className="boutique-link text-[13px] tracking-[0.2em] font-medium py-2">STORY</a>
+                </div>
 
-        {/* Center Logo/Signature */}
-        <Link to="/" className="flex flex-col items-center justify-center">
-            <h1 className="font-display text-3xl md:text-6xl tracking-[0.4em] font-bold py-1 lowercase transition-transform duration-500 hover:scale-105">
-                {BRAND_NAME}<span className="text-gold opacity-50 text-base md:text-2xl relative -top-2 md:-top-4 ml-1">ā</span>
-            </h1>
-        </Link>
+                <Link to="/" className="flex flex-col items-center justify-center">
+                    <h1 className="font-display text-3xl md:text-6xl tracking-[0.4em] font-bold py-1 lowercase transition-transform duration-500 hover:scale-105">
+                        {brand.name || BRAND_NAME_DEFAULT}<span className="text-gold opacity-50 text-base md:text-2xl relative -top-2 md:-top-4 ml-1">ā</span>
+                    </h1>
+                </Link>
 
-        {/* Right Utility Group */}
-        <div className="flex-1 flex justify-end gap-4 md:gap-8 items-center">
-          <Search size={20} className="hidden md:block cursor-pointer hover:text-gold transition-colors opacity-80 hover:opacity-100" />
-          <User size={20} className="hidden md:block cursor-pointer hover:text-gold transition-colors opacity-80 hover:opacity-100" />
-          <div className="relative group cursor-pointer">
-            <ShoppingBag size={20} className="hover:text-gold transition-colors opacity-80 hover:opacity-100" />
-            <span className="absolute -top-2 -right-2 bg-gold text-black text-[9px] w-4 h-4 flex items-center justify-center rounded-full font-bold">0</span>
-          </div>
-          <button className="md:hidden p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-      </div>
+                <div className="flex-1 flex justify-end gap-4 md:gap-8 items-center">
+                    <Search size={20} className="hidden md:block cursor-pointer hover:text-gold transition-colors opacity-80 hover:opacity-100" />
+                    <User size={20} className="hidden md:block cursor-pointer hover:text-gold transition-colors opacity-80 hover:opacity-100" />
+                    <div className="relative group cursor-pointer">
+                        <ShoppingBag size={20} className="hover:text-gold transition-colors opacity-80 hover:opacity-100" />
+                        <span className="absolute -top-2 -right-2 bg-gold text-black text-[9px] w-4 h-4 flex items-center justify-center rounded-full font-bold">0</span>
+                    </div>
+                    <button className="md:hidden p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                        {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                    </button>
+                </div>
+            </div>
 
-      {/* Category Strip (Inline Boutique Style) */}
-      <div className={`hidden md:flex justify-center gap-12 py-4 px-10 transition-all duration-500 border-t border-white/5 ${isScrolled ? 'opacity-100 h-14' : 'opacity-0 h-0 overflow-hidden'}`}>
-        {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => onCategoryChange(cat)}
-              className={`text-[12px] tracking-[0.25em] font-bold transition-all hover:text-gold ${activeCategory === cat ? 'text-gold' : 'text-white/60'}`}
-            >
-              {cat}
-            </button>
-        ))}
-      </div>
+            <div className={`hidden md:flex justify-center gap-12 py-4 px-10 transition-all duration-500 border-t border-white/5 ${isScrolled ? 'opacity-100 h-14' : 'opacity-0 h-0 overflow-hidden'}`}>
+                {materials.map((cat) => (
+                    <button
+                        key={cat}
+                        onClick={() => onCategoryChange && onCategoryChange(cat)}
+                        className={`text-[12px] tracking-[0.25em] font-bold transition-all hover:text-gold ${activeCategory === cat ? 'text-gold' : 'text-white/60'}`}
+                    >
+                        {cat}
+                    </button>
+                ))}
+            </div>
 
-      {/* Mobile Menu */}
-      <div className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out bg-black/95 ${isMobileMenuOpen ? 'max-h-screen' : 'max-h-0'}`}>
-        <div className="flex flex-col items-center py-12 gap-8 text-[14px] tracking-[0.3em] text-white">
-          <Link to="/categories" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-gold transition-colors">CATEGORIES</Link>
-          <Link to="/atelier" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-gold transition-colors">ATELIER</Link>
-          <a href="/#about" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-gold transition-colors">STORY</a>
-          <div className="w-12 h-[1px] bg-gold/30 mt-4"></div>
-          <span className="text-[10px] tracking-[0.5em] text-white/40 uppercase">By Material</span>
-          {CATEGORIES.map((cat) => (
-            <button key={cat} onClick={() => { onCategoryChange && onCategoryChange(cat); setIsMobileMenuOpen(false); }} className="hover:text-gold transition-colors">
-              {cat}
-            </button>
-          ))}
-        </div>
-      </div>
-    </nav>
-  );
+            <div className={`md:hidden overflow-hidden transition-all duration-500 ease-in-out bg-black/95 ${isMobileMenuOpen ? 'max-h-screen' : 'max-h-0'}`}>
+                <div className="flex flex-col items-center py-12 gap-8 text-[14px] tracking-[0.3em] text-white">
+                    <Link to="/categories" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-gold transition-colors">CATEGORIES</Link>
+                    <Link to="/atelier" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-gold transition-colors">ATELIER</Link>
+                    <a href="/#about" onClick={() => setIsMobileMenuOpen(false)} className="hover:text-gold transition-colors">STORY</a>
+                    <div className="w-12 h-[1px] bg-gold/30 mt-4"></div>
+                    <span className="text-[10px] tracking-[0.5em] text-white/40 uppercase">By Material</span>
+                    {materials.map((cat) => (
+                        <button key={cat} onClick={() => { onCategoryChange && onCategoryChange(cat); setIsMobileMenuOpen(false); }} className="hover:text-gold transition-colors">
+                            {cat}
+                        </button>
+                    ))}
+                </div>
+            </div>
+        </nav>
+    );
 };
 
 export default Navbar;

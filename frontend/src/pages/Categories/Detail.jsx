@@ -485,7 +485,7 @@ export default function CategoryDetail() {
                   className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-y-16 md:gap-y-20 gap-x-6 md:gap-x-10"
                 >
                   {firstBatch.map((p, i) => (
-                    <MaisonProductCard key={p.id || i} product={p} index={i} />
+                    <MaisonProductCard key={p.id || i} product={p} index={i} categorySlug={slug} />
                   ))}
 
                   {hasRestBatch && (
@@ -501,6 +501,7 @@ export default function CategoryDetail() {
                       key={p.id || `rest-${i}`}
                       product={p}
                       index={firstBatch.length + i}
+                      categorySlug={slug}
                     />
                   ))}
                 </div>

@@ -97,7 +97,7 @@ export default function CategoriesLanding() {
             className="font-serif font-light leading-[0.92] tracking-[-0.025em]"
             style={{ fontSize: 'clamp(56px, 12vw, 240px)', color: 'var(--ink)' }}
           >
-            Ten chapters,
+            Five forms,
             <br />
             <span className="italic font-extralight" style={{ color: 'var(--gold-deep)' }}>
               one Maison.
@@ -115,13 +115,13 @@ export default function CategoriesLanding() {
               className="font-serif italic max-w-xl leading-[1.5] font-light"
               style={{ fontSize: 'clamp(17px, 1.5vw, 24px)', color: 'var(--muted)' }}
             >
-              From the seamless kara to the bridal collar — each form has a
+              From the solitaire ring to the bridal collar — each form has a
               voice, a discipline, and a chapter at the bench. Slip into the
               one that calls to you.
             </p>
 
             <div className="flex gap-10 md:gap-14" style={{ color: 'var(--ink)' }}>
-              <Stat n="X" l="Categories" />
+              <Stat n="V" l="Categories" />
               <Stat n="200+" l="Pieces" />
               <Stat n="Hazaribag" l="At the bench" />
             </div>
@@ -161,7 +161,7 @@ export default function CategoriesLanding() {
             <div className="hidden md:flex items-center gap-3 mono" style={{ color: 'var(--muted)', fontSize: 10, letterSpacing: '0.34em' }}>
               <span>Volume № I</span>
               <span style={{ display: 'inline-block', width: 22, height: 1, background: 'var(--muted)' }} />
-              <span>X Chapters</span>
+              <span>V Chapters</span>
             </div>
           </div>
 

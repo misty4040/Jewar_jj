@@ -186,7 +186,7 @@ const Home = () => {
                         </div>
 
                         <div className="reveal">
-                            <CategoriesGrid variant="home" />
+                            <CategoriesGrid variant="page" />
                         </div>
                     </div>
                 </section>

@@ -18,6 +18,12 @@ const empty = {
     stats: [],
     order: 0,
     published: true,
+    bannerImage: '',
+    bannerPreHeading: 'The Maison Says',
+    bannerHeading: 'Make a style statement,\none',
+    bannerHighlight: '',
+    bannerPostHeading: 'at a time.',
+    bannerText: 'Hand-finished at the Hazaribag bench. By appointment, by hand.',
 };
 
 export default function CategoryForm() {
@@ -116,6 +122,33 @@ export default function CategoryForm() {
                     <input type="checkbox" checked={form.published} onChange={(e) => set('published', e.target.checked)} />
                     Published (visible on storefront)
                 </label>
+
+                <div className="full" style={{ background: 'var(--bg-light)', padding: 16, borderRadius: 'var(--radius)', border: '1px solid var(--line)', marginTop: 16 }}>
+                    <label style={{ marginBottom: 16, display: 'block', fontWeight: 600 }}>Category Banner Settings</label>
+                    <ImageUpload label="Banner Image (Overrides Hero Image in Banner)" value={form.bannerImage} onChange={(v) => set('bannerImage', v)} />
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 16 }}>
+                        <label>
+                            Pre-Heading
+                            <input type="text" value={form.bannerPreHeading} onChange={(e) => set('bannerPreHeading', e.target.value)} />
+                        </label>
+                        <label>
+                            Heading Line 1
+                            <input type="text" value={form.bannerHeading} onChange={(e) => set('bannerHeading', e.target.value)} />
+                        </label>
+                        <label>
+                            Highlighted Word (Leaves blank to use Category Name)
+                            <input type="text" value={form.bannerHighlight} onChange={(e) => set('bannerHighlight', e.target.value)} placeholder="e.g. GOLD LADIES RING" />
+                        </label>
+                        <label>
+                            Heading Line 2
+                            <input type="text" value={form.bannerPostHeading} onChange={(e) => set('bannerPostHeading', e.target.value)} />
+                        </label>
+                    </div>
+                    <label className="full" style={{ marginTop: 16 }}>
+                        Footer Text
+                        <textarea value={form.bannerText} onChange={(e) => set('bannerText', e.target.value)} rows={2} />
+                    </label>
+                </div>
 
                 <div className="full">
                     <div className="bar" style={{ marginTop: 8 }}>

@@ -330,11 +330,57 @@ export default function ProductDetail() {
                             <div className="hairline mb-5" />
 
                             <p
-                                className="font-serif font-light leading-[1.55]"
+                                className="font-serif font-light leading-[1.55] mb-5"
                                 style={{ fontSize: 'clamp(14px, 1.05vw, 18px)', color: 'var(--ink)', opacity: 0.75 }}
                             >
                                 {product.description || cat.description}
                             </p>
+
+                            {(product.purity || product.codingNo || product.grossWeight || product.netWeight || product.otherWeight || product.remarks) && (
+                                <div className="mb-6 pt-5 border-t" style={{ borderColor: 'var(--rule)' }}>
+                                    <div className="mono mb-4" style={{ color: 'var(--gold-deep)', fontSize: 9, letterSpacing: '0.46em' }}>
+                                        SPECIFICATIONS
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-y-3 text-xs mono" style={{ color: 'var(--muted)', letterSpacing: '0.1em' }}>
+                                        {product.purity && (
+                                            <>
+                                                <span className="font-medium">PURITY</span>
+                                                <span style={{ color: 'var(--ink)' }}>{product.purity}</span>
+                                            </>
+                                        )}
+                                        {product.codingNo && (
+                                            <>
+                                                <span className="font-medium">CODING NO.</span>
+                                                <span style={{ color: 'var(--ink)' }}>{product.codingNo}</span>
+                                            </>
+                                        )}
+                                        {product.grossWeight && (
+                                            <>
+                                                <span className="font-medium">GROSS WEIGHT</span>
+                                                <span style={{ color: 'var(--ink)' }}>{product.grossWeight}</span>
+                                            </>
+                                        )}
+                                        {product.netWeight && (
+                                            <>
+                                                <span className="font-medium">NET WEIGHT</span>
+                                                <span style={{ color: 'var(--ink)' }}>{product.netWeight}</span>
+                                            </>
+                                        )}
+                                        {product.otherWeight && (
+                                            <>
+                                                <span className="font-medium">AD / DIA WEIGHT</span>
+                                                <span style={{ color: 'var(--ink)' }}>{product.otherWeight}</span>
+                                            </>
+                                        )}
+                                        {product.remarks && (
+                                            <>
+                                                <span className="font-medium">REMARKS</span>
+                                                <span style={{ color: 'var(--ink)' }}>{product.remarks}</span>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="mt-6 flex items-baseline gap-4">
                                 <span className="mono" style={{ fontSize: 9, color: 'var(--muted)', letterSpacing: '0.46em' }}>

@@ -8,10 +8,10 @@ import HeroList from './pages/hero/List.jsx';
 import HeroForm from './pages/hero/Form.jsx';
 import CategoryList from './pages/categories/List.jsx';
 import CategoryForm from './pages/categories/Form.jsx';
+import BannerList from './pages/banners/List.jsx';
+import BannerForm from './pages/banners/Form.jsx';
 import ProductList from './pages/products/List.jsx';
 import ProductForm from './pages/products/Form.jsx';
-import CollectionList from './pages/collections/List.jsx';
-import CollectionForm from './pages/collections/Form.jsx';
 import ServiceList from './pages/services/List.jsx';
 import ServiceForm from './pages/services/Form.jsx';
 import ReviewList from './pages/reviews/List.jsx';
@@ -39,14 +39,13 @@ export default function App() {
                 <Route path="categories" element={<CategoryList />} />
                 <Route path="categories/new" element={<CategoryForm />} />
                 <Route path="categories/:id" element={<CategoryForm />} />
+                
+                <Route path="banners" element={<BannerList />} />
+                <Route path="banners/:id" element={<BannerForm />} />
 
                 <Route path="products" element={<ProductList />} />
                 <Route path="products/new" element={<ProductForm />} />
                 <Route path="products/:id" element={<ProductForm />} />
-
-                <Route path="collections" element={<CollectionList />} />
-                <Route path="collections/new" element={<CollectionForm />} />
-                <Route path="collections/:id" element={<CollectionForm />} />
 
                 <Route path="services" element={<ServiceList />} />
                 <Route path="services/new" element={<ServiceForm />} />

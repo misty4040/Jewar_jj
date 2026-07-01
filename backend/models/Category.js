@@ -22,6 +22,12 @@ const categorySchema = mongoose.Schema(
         stats: [statSchema],
         order: { type: Number, default: 0 },
         published: { type: Boolean, default: true, index: true },
+        bannerImage: { type: String, default: '' },
+        bannerPreHeading: { type: String, default: 'The Maison Says' },
+        bannerHeading: { type: String, default: 'Make a style statement,\\none' },
+        bannerHighlight: { type: String, default: '' },
+        bannerPostHeading: { type: String, default: 'at a time.' },
+        bannerText: { type: String, default: 'Hand-finished at the Hazaribag bench. By appointment, by hand.' },
     },
     { timestamps: true }
 );

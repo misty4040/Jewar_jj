@@ -2,21 +2,30 @@ import { useEffect, useState, useCallback } from 'react';
 import api from './api';
 import toast from 'react-hot-toast';
 
-export function useList(path) {
+export function useList(path, initialParams = {}) {
     const [items, setItems] = useState([]);
+    const [meta, setMeta] = useState({ total: 0, page: 1, pages: 1 });
     const [loading, setLoading] = useState(true);
+    const [params, setParams] = useState(initialParams);
 
     const refresh = useCallback(async () => {
         setLoading(true);
         try {
-            const { data } = await api.get(`${path}?all=1`);
-            setItems(Array.isArray(data) ? data : []);
+            const query = new URLSearchParams({ ...params, all: 1 }).toString();
+            const { data } = await api.get(`${path}?${query}`);
+            
+            if (data && data.data && typeof data.total !== 'undefined') {
+                setItems(data.data);
+                setMeta({ total: data.total, page: data.page, pages: data.pages });
+            } else {
+                setItems(Array.isArray(data) ? data : []);
+            }
         } catch (e) {
             toast.error(e.response?.data?.message || 'Failed to load');
         } finally {
             setLoading(false);
         }
-    }, [path]);
+    }, [path, params]);
 
     useEffect(() => { refresh(); }, [refresh]);
 
@@ -31,7 +40,7 @@ export function useList(path) {
         }
     };
 
-    return { items, loading, refresh, remove };
+    return { items, loading, refresh, remove, meta, params, setParams };
 }
 
 export function useOne(path, id) {

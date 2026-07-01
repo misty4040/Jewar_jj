@@ -160,7 +160,7 @@ export default function CategoryDetail() {
     const hasRestBatch = restBatch.length > 0;
     const heroSrc = resolveImage(cat.heroImage);
     const heroPos = cat.heroPosition || '50% 50%';
-    const bannerImage = resolveImage(cat.heroImage);
+    const bannerImage = cat.bannerImage ? resolveImage(cat.bannerImage) : resolveImage(cat.heroImage);
     const bannerWord = cat.name.toUpperCase();
 
     const filterPanel = (
@@ -511,6 +511,11 @@ export default function CategoryDetail() {
                                             image={bannerImage}
                                             word={bannerWord}
                                             name={cat.name}
+                                            preHeading={cat.bannerPreHeading}
+                                            heading={cat.bannerHeading}
+                                            highlight={cat.bannerHighlight}
+                                            postHeading={cat.bannerPostHeading}
+                                            text={cat.bannerText}
                                         />
                                     )}
 

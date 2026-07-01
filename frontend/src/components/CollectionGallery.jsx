@@ -3,8 +3,8 @@ import { useFetch } from '../lib/useFetch';
 import { resolveImage } from '../lib/api';
 
 const CollectionGallery = () => {
-    const { data: collections } = useFetch('/api/collections', []);
-    const list = collections || [];
+    const { data: categories } = useFetch('/api/categories?all=1', []);
+    const list = (categories || []).slice(0, 3); // showing first 3 for the grid
 
     return (
         <section className="py-16 md:py-32 bg-white overflow-hidden">
@@ -20,23 +20,23 @@ const CollectionGallery = () => {
                     {list.map((col, i) => (
                         <a
                             key={col._id || i}
-                            href={col.link || '#'}
+                            href={`/categories/${col.slug}`}
                             className="group relative aspect-[4/5] overflow-hidden cursor-pointer reveal transition-all duration-700 md:hover:-translate-y-4 hover:shadow-2xl block"
                             style={{ transitionDelay: `${i * 0.2}s` }}
                         >
                             <img
-                                src={resolveImage(col.image)}
-                                alt={col.title}
+                                src={resolveImage(col.heroImage)}
+                                alt={col.name}
                                 className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110"
                             />
 
                             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-700 flex flex-col items-center justify-end pb-12 md:pb-16 text-center px-10">
                                 <h3 className="text-white text-2xl md:text-4xl font-display font-bold tracking-[0.15em] mb-4 drop-shadow-lg">
-                                    {col.title}
+                                    {col.name}
                                 </h3>
-                                {col.subtitle && (
+                                {col.tagline && (
                                     <p className="text-white/80 text-[10px] tracking-[0.3em] font-black uppercase opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-700">
-                                        {col.subtitle}
+                                        {col.tagline}
                                     </p>
                                 )}
                                 <div className="h-[1px] w-0 group-hover:w-16 bg-gold mt-6 transition-all duration-700"></div>
@@ -47,7 +47,7 @@ const CollectionGallery = () => {
 
                 <div className="flex justify-center mt-24 reveal">
                     <a
-                        href="#collections"
+                        href="/categories"
                         className="text-[11px] tracking-[0.4em] font-bold uppercase py-6 px-16 bg-[#f9f9f9] text-black border border-black/5 hover:bg-gold hover:text-white transition-all duration-700 shadow-sm hover:shadow-xl"
                     >
                         Browse all Collections

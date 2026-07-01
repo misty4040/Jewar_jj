@@ -20,10 +20,16 @@ const productSchema = mongoose.Schema(
         featured: { type: Boolean, default: false, index: true },
         order: { type: Number, default: 0 },
         published: { type: Boolean, default: true, index: true },
+        purity: { type: String, default: '' },
+        remarks: { type: String, default: '' },
+        codingNo: { type: String, default: '', trim: true },
+        grossWeight: { type: String, default: '', trim: true },
+        netWeight: { type: String, default: '', trim: true },
+        otherWeight: { type: String, default: '', trim: true },
     },
     { timestamps: true }
 );
 
-productSchema.index({ name: 'text', description: 'text', material: 'text' });
+productSchema.index({ name: 'text', description: 'text', material: 'text', codingNo: 'text', remarks: 'text' });
 
 module.exports = mongoose.model('Product', productSchema);

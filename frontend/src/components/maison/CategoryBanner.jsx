@@ -5,7 +5,9 @@ import { motion } from 'framer-motion';
 // product grid. Maison-tinted: ivory plate, gold rule, serif italic
 // headline, model photograph with chiaroscuro. Parent (Detail.jsx) places
 // this on a `gridColumn: '1 / -1'` so it spans the full grid width.
-export default function CategoryBanner({ image, word, name }) {
+export default function CategoryBanner({ image, word, name, preHeading, heading, highlight, postHeading, text }) {
+  const safeHeading = heading || '';
+  const lines = safeHeading.split('\\n'); // Allow basic line break in admin
   return (
     <motion.aside
       initial={{ opacity: 0, y: 30 }}
@@ -72,25 +74,25 @@ export default function CategoryBanner({ image, word, name }) {
       <div className="relative z-10 h-full flex flex-col justify-center p-8 md:p-12 lg:p-14 max-w-[58%] sm:max-w-[55%]">
         <div
           className="mono mb-5"
-          style={{ color: 'var(--gold-deep)', fontSize: 10, letterSpacing: '0.4em' }}
+          style={{ color: 'var(--gold-deep)', fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase' }}
         >
-          The Maison Says
+          {preHeading || 'The Maison Says'}
         </div>
 
         <h3
           className="font-serif font-light leading-[1.05] tracking-[-0.015em]"
           style={{ fontSize: 'clamp(26px, 3.6vw, 60px)', color: 'var(--ink)' }}
         >
-          Make a style statement,
-          <br />
-          one{' '}
+          {lines[0] || 'Make a style statement,'}
+          {lines.length > 1 && <br />}
+          {lines[1] || 'one '}{' '}
           <span
             className="italic font-extralight"
-            style={{ color: 'var(--gold-deep)', letterSpacing: '0.02em' }}
+            style={{ color: 'var(--gold-deep)', letterSpacing: '0.02em', textTransform: 'uppercase' }}
           >
-            {word}
+            {highlight || word || name}
           </span>{' '}
-          at a time.
+          {postHeading || 'at a time.'}
         </h3>
 
         <div
@@ -102,7 +104,7 @@ export default function CategoryBanner({ image, word, name }) {
           className="font-serif italic mt-5 leading-[1.5] font-light"
           style={{ fontSize: 'clamp(13px, 1.05vw, 17px)', color: 'var(--muted)' }}
         >
-          Hand-finished at the Hazaribag bench. By appointment, by hand.
+          {text || 'Hand-finished at the Hazaribag bench. By appointment, by hand.'}
         </p>
       </div>
 

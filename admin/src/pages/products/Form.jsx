@@ -20,6 +20,12 @@ const empty = {
     featured: false,
     order: 0,
     published: true,
+    purity: '',
+    remarks: '',
+    codingNo: '',
+    grossWeight: '',
+    netWeight: '',
+    otherWeight: '',
 };
 
 export default function ProductForm() {
@@ -94,12 +100,77 @@ export default function ProductForm() {
                     Price (INR)
                     <input type="number" min="0" value={form.price} onChange={(e) => set('price', Number(e.target.value))} />
                 </label>
+                <label>
+                    Purity
+                    <select value={form.purity} onChange={(e) => set('purity', e.target.value)}>
+                        <option value="">— choose —</option>
+                        <option value="22kt">22kt</option>
+                        <option value="18kt">18kt</option>
+                        <option value="pt">pt</option>
+                    </select>
+                </label>
+                <label>
+                    Coding No.
+                    <input type="text" value={form.codingNo} onChange={(e) => set('codingNo', e.target.value)} placeholder="e.g. lr22/22" />
+                </label>
+                <label>
+                    Gross Weight
+                    <input type="text" value={form.grossWeight} onChange={(e) => set('grossWeight', e.target.value)} placeholder="e.g. 5.240 g" />
+                </label>
+                <label>
+                    Net Weight
+                    <input type="text" value={form.netWeight} onChange={(e) => set('netWeight', e.target.value)} placeholder="e.g. 5.100 g" />
+                </label>
+                <label>
+                    Other Weight (AD/DIA)
+                    <input type="text" value={form.otherWeight} onChange={(e) => set('otherWeight', e.target.value)} placeholder="e.g. 1.250 g" />
+                </label>
                 <label className="full">
                     Description
                     <textarea value={form.description} onChange={(e) => set('description', e.target.value)} />
                 </label>
+                <label className="full">
+                    Remarks
+                    <textarea value={form.remarks} onChange={(e) => set('remarks', e.target.value)} />
+                </label>
                 <ImageUpload label="Primary Image" value={form.image} onChange={(v) => set('image', v)} />
                 <ImageUpload label="Hover / Alt Image" value={form.hoverImage} onChange={(v) => set('hoverImage', v)} />
+                
+                <div className="full" style={{ background: 'var(--bg-light)', padding: 16, borderRadius: 'var(--radius)', border: '1px solid var(--line)', marginTop: 16 }}>
+                    <label style={{ marginBottom: 12, display: 'block', fontWeight: 600 }}>Gallery Images</label>
+                    {(form.gallery || []).map((url, i) => (
+                        <div key={i} style={{ marginBottom: 24, paddingBottom: 16, borderBottom: '1px dashed var(--line)' }}>
+                            <ImageUpload
+                                label={`Gallery Image ${i + 1}`}
+                                value={url}
+                                onChange={(v) => {
+                                    const newGallery = [...(form.gallery || [])];
+                                    newGallery[i] = v;
+                                    set('gallery', newGallery);
+                                }}
+                            />
+                            <button 
+                                type="button" 
+                                className="btn sm danger" 
+                                style={{ marginTop: 8 }}
+                                onClick={() => {
+                                    const newGallery = [...(form.gallery || [])];
+                                    newGallery.splice(i, 1);
+                                    set('gallery', newGallery);
+                                }}
+                            >
+                                Remove Gallery Image
+                            </button>
+                        </div>
+                    ))}
+                    <button
+                        type="button"
+                        className="btn ghost sm"
+                        onClick={() => set('gallery', [...(form.gallery || []), ''])}
+                    >
+                        + Add Gallery Image
+                    </button>
+                </div>
                 <label>
                     Order
                     <input type="number" value={form.order} onChange={(e) => set('order', Number(e.target.value))} />

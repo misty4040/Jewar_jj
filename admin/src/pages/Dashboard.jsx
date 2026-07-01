@@ -6,8 +6,8 @@ import PageHead from '../components/PageHead';
 const RES = [
     { label: 'Hero Slides', path: '/hero', key: 'hero' },
     { label: 'Categories', path: '/categories', key: 'categories' },
+    { label: 'Category Banners', path: '/banners', key: 'banners' },
     { label: 'Products', path: '/products', key: 'products' },
-    { label: 'Collections', path: '/collections', key: 'collections' },
     { label: 'Services', path: '/services', key: 'services' },
     { label: 'Reviews', path: '/reviews', key: 'reviews' },
 ];

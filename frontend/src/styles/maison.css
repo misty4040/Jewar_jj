@@ -42,9 +42,7 @@
   overflow-x: clip;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .maison, .maison * { cursor: none; }
-}
+
 
 /* ---------- typography helpers ---------- */
 .maison .serif        { font-family: var(--font-serif); font-weight: 400; letter-spacing: -0.005em; }
@@ -291,7 +289,7 @@ body.maison-cursor-hover .maison-cursor-ring {
   border: none;
   padding: 0;
   position: relative;
-  cursor: none;
+  cursor: pointer;
   transition: height 0.4s var(--ease);
 }
 .maison-rail .tick::before {
